@@ -97,16 +97,16 @@ class Contributor_Highlights_Public {
 				<?php endif; ?>
 
 				<div class="contributor-info">
-					<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
+					<h2 class="contributor-name"><?php esc_html_e( $profile_data['name'], 'contributor-highlights' ); ?></h2>
 
 					<?php if ( $atts['show_meta'] === 'yes' && ! empty( $profile_data['user_meta'] ) ) : ?>
 						<div class="contributor-meta">
 							<?php if ( ! empty( $profile_data['user_meta']['job'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-businessman"></span>
-									<?php echo esc_html( $profile_data['user_meta']['job'] ); ?>
+									<?php esc_html_e( $profile_data['user_meta']['job'], 'contributor-highlights' ); ?>
 									<?php if ( ! empty( $profile_data['user_meta']['company'] ) ) : ?>
-										at <?php echo esc_html( $profile_data['user_meta']['company'] ); ?>
+										at <?php esc_html_e( $profile_data['user_meta']['company'], 'contributor-highlights' ); ?>
 									<?php endif; ?>
 								</div>
 							<?php endif; ?>
@@ -114,7 +114,7 @@ class Contributor_Highlights_Public {
 							<?php if ( ! empty( $profile_data['user_meta']['location'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-location"></span>
-									<?php echo esc_html( $profile_data['user_meta']['location'] ); ?>
+									<?php esc_html_e( $profile_data['user_meta']['location'], 'contributor-highlights' ); ?>
 								</div>
 							<?php endif; ?>
 
@@ -122,7 +122,7 @@ class Contributor_Highlights_Public {
 								<div class="meta-item">
 									<span class="dashicons dashicons-admin-site"></span>
 									<a href="<?php echo esc_url( $profile_data['user_meta']['website']['url'] ); ?>" target="_blank">
-										<?php echo esc_html( $profile_data['user_meta']['website']['text'] ); ?>
+										<?php esc_html_e( $profile_data['user_meta']['website']['text'], 'contributor-highlights' ); ?>
 									</a>
 								</div>
 							<?php endif; ?>
@@ -131,7 +131,7 @@ class Contributor_Highlights_Public {
 								<div class="meta-item">
 									<span class="dashicons dashicons-editor-code"></span>
 									<a href="<?php echo esc_url( $profile_data['user_meta']['github']['url'] ); ?>" target="_blank">
-										<?php echo esc_html( $profile_data['user_meta']['github']['text'] ); ?>
+										<?php esc_html_e( $profile_data['user_meta']['github']['text'], 'contributor-highlights' ); ?>
 									</a>
 								</div>
 							<?php endif; ?>
@@ -139,7 +139,7 @@ class Contributor_Highlights_Public {
 							<?php if ( ! empty( $profile_data['user_meta']['member-since'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-calendar-alt"></span>
-									Member since <?php echo esc_html( $profile_data['user_meta']['member-since'] ); ?>
+									Member since <?php esc_html_e( $profile_data['user_meta']['member-since'], 'contributor-highlights' ); ?>
 								</div>
 							<?php endif; ?>
 						</div>
@@ -150,11 +150,11 @@ class Contributor_Highlights_Public {
 			<?php if ( $atts['show_bio'] === 'yes' && ! empty( $profile_data['bio'] ) ) : ?>
 				<div class="contributor-bio">
 					<?php echo wp_kses_post( $profile_data['bio'] ); ?>
-				</div>
+				</div>	
 			<?php endif; ?>
 
 			<?php if ( $atts['show_contributions'] === 'yes' && ! empty( $profile_data['contributions'] ) ) : ?>
-				<h3><?php _e( 'Contributions', 'contributor-highlights' ); ?></h3>
+				<h3><?php esc_html_e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
 					<?php echo wp_kses_post( $profile_data['contributions'] ); ?>
 				</div>
@@ -162,12 +162,12 @@ class Contributor_Highlights_Public {
 
 			<?php if ( $atts['show_badges'] === 'yes' && ! empty( $profile_data['badges'] ) ) : ?>
 				<div class="contributor-badges">
-					<h3><?php _e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+					<h3><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
 					<div class="badges-grid">
 						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
 							<div class="badge-item">
-								<span class="dashicons <?php echo implode( ' ', $badge['class'] ); ?>"></span>
-								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
+								<span class="dashicons <?php esc_html_e( implode( ' ', $badge['class'] ) ); ?>"></span>
+								<span class="badge-name"><?php esc_html_e( $badge['name'] ); ?></span>
 							</div>
 						<?php endforeach; ?>
 					</div>
@@ -194,19 +194,17 @@ class Contributor_Highlights_Public {
 			$response = wp_remote_get( 'https://profiles.wordpress.org/' . $username . '/' );
 
 			if ( is_wp_error( $response ) ) {
-				error_log( 'Contributor Highlights - Error fetching profile: ' . $response->get_error_message() );
 				return $response;
 			}
 
 			$profile_data = wp_remote_retrieve_body( $response );
 
 			if ( empty( $profile_data ) ) {
-				error_log( 'Contributor Highlights - Empty response from WordPress.org' );
 				return new WP_Error( 'empty_response', __( 'No data received from WordPress.org', 'contributor-highlights' ) );
 			}
 
 			if ( is_wp_error( $profile_data ) ) {
-				return $profile_data->get_error_message();
+				return $profile_data;
 			}
 
 			// Cache the data for 6 hour
