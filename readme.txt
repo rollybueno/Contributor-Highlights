@@ -17,7 +17,7 @@ Contributor Highlights is a lightweight plugin designed for individuals and orga
 With this plugin, you can easily fetch and present detailed contributor information from public WordPress.org profiles. The plugin pulls in and displays:
 
 - Contributor name and avatar
-- Slack handle and profile link
+- Contribution weekly pledge
 - Short biography
 - Contribution badges (e.g., Core Contributor, Plugin Developer, Translation Editor, etc.)
 - Meta information such as member since date, location, website, GitHub, employer, and job title
@@ -46,22 +46,11 @@ The plugin interacts with the following external services:
   * No authentication required
   * Data is publicly available
 
-* **Gravatar**
-  * Used to display contributor avatars
-  * No authentication required
-  * Data is publicly available
-  * Privacy policy: https://automattic.com/privacy/
-
 == Privacy Policy ==
 
 This plugin does not collect any personal data from your website visitors. It only temporarily caches publicly available data from WordPress.org profiles to improve performance. All cached data is automatically cleared when the plugin is deactivated.
 
-The plugin uses the following external services:
-
-* WordPress.org Profiles - for fetching contributor profile data
-* Gravatar - for displaying contributor avatars
-
-Both services are used without authentication and only access publicly available data. 
+The plugin uses WordPress.org Profiles to fetch contributor data, including avatars. All data is publicly available and accessed without authentication.
 
 == Installation ==
 
@@ -81,7 +70,7 @@ All cached data is automatically cleared when you deactivate the plugin. No data
 
 = Does this plugin require any API keys? =
 
-No, this plugin does not require any API keys. It uses publicly available data from WordPress.org profiles and Gravatar.
+No, this plugin does not require any API keys. It uses publicly available data from WordPress.org profiles.
 
 = Is there a limit to how many profiles I can display? =
 
@@ -89,9 +78,10 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 
 == Screenshots ==
 
-1. Contributor profile block in the editor
-2. Contributor profile display on the frontend
-3. Block settings panel
+1. Contributor Highlights block in the editor, displaying a profile with block settings visible in the sidebar.
+2. The block inserter in the WordPress editor, demonstrating how to find the Contributor Highlights block by typing “/Contributor” in a post or page.
+3. Block settings panel showing options to configure the Contributor Highlights block, including WordPress.org username and display preferences.
+4. Front-end view of a Contributor Highlights card on a live page, showing contributor avatar, name, bio, contribution badges, and meta information styled within the site’s theme.
 
 == Changelog ==
 
