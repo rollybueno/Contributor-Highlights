@@ -24,6 +24,8 @@ class Contributor_Highlights_Public {
 				'show_avatar'        => 'yes',
 				'show_bio'           => 'yes',
 				'show_contributions' => 'yes',
+				'show_badges'        => 'yes',
+				'show_meta'          => 'yes',
 			),
 			$atts,
 			'contributor_profile'
@@ -42,32 +44,98 @@ class Contributor_Highlights_Public {
 		ob_start();
 		?>
 		<div class="contributor-profile">
-			<?php if ( $atts['show_avatar'] === 'yes' && ! empty( $profile_data['avatar'] ) ) : ?>
-				<div class="contributor-avatar">
-					<img src="<?php echo esc_url( $profile_data['avatar'] ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+			<div class="contributor-header">
+				<?php if ( $atts['show_avatar'] === 'yes' && ! empty( $profile_data['avatar'] ) ) : ?>
+					<div class="contributor-avatar">
+						<img src="<?php echo esc_url( $profile_data['avatar'] ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+					</div>
+				<?php endif; ?>
+
+				<div class="contributor-info">
+					<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
+					
+					<?php if ( ! empty( $profile_data['slack'] ) ) : ?>
+						<div class="contributor-slack">
+							<span class="dashicons dashicons-slack"></span>
+							<?php echo esc_html( $profile_data['slack'] ); ?>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] === 'yes' && ! empty( $profile_data['user_meta'] ) ) : ?>
+						<div class="contributor-meta">
+							<?php if ( ! empty( $profile_data['user_meta']['job'] ) ) : ?>
+								<div class="meta-item">
+									<span class="dashicons dashicons-businessman"></span>
+									<?php echo esc_html( $profile_data['user_meta']['job'] ); ?>
+									<?php if ( ! empty( $profile_data['user_meta']['company'] ) ) : ?>
+										at <?php echo esc_html( $profile_data['user_meta']['company'] ); ?>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $profile_data['user_meta']['location'] ) ) : ?>
+								<div class="meta-item">
+									<span class="dashicons dashicons-location"></span>
+									<?php echo esc_html( $profile_data['user_meta']['location'] ); ?>
+								</div>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $profile_data['user_meta']['website'] ) ) : ?>
+								<div class="meta-item">
+									<span class="dashicons dashicons-admin-site"></span>
+									<a href="<?php echo esc_url( $profile_data['user_meta']['website']['url'] ); ?>" target="_blank">
+										<?php echo esc_html( $profile_data['user_meta']['website']['text'] ); ?>
+									</a>
+								</div>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $profile_data['user_meta']['github'] ) ) : ?>
+								<div class="meta-item">
+									<span class="dashicons dashicons-editor-code"></span>
+									<a href="<?php echo esc_url( $profile_data['user_meta']['github']['url'] ); ?>" target="_blank">
+										<?php echo esc_html( $profile_data['user_meta']['github']['text'] ); ?>
+									</a>
+								</div>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $profile_data['user_meta']['member-since'] ) ) : ?>
+								<div class="meta-item">
+									<span class="dashicons dashicons-calendar-alt"></span>
+									Member since <?php echo esc_html( $profile_data['user_meta']['member-since'] ); ?>
+								</div>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
+				</div>
+			</div>
+
+			<?php if ( $atts['show_bio'] === 'yes' && ! empty( $profile_data['bio'] ) ) : ?>
+				<div class="contributor-bio">
+					<?php echo wp_kses_post( $profile_data['bio'] ); ?>
 				</div>
 			<?php endif; ?>
 
-			<div class="contributor-info">
-				<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
+			<?php if ( $atts['show_contributions'] === 'yes' && ! empty( $profile_data['contributions'] ) ) : ?>
+				<div class="contributor-contributions">
+					<?php echo wp_kses_post( $profile_data['contributions'] ); ?>
+				</div>
+			<?php endif; ?>
 
-				<?php if ( $atts['show_bio'] === 'yes' && ! empty( $profile_data['bio'] ) ) : ?>
-					<div class="contributor-bio">
-						<?php echo wp_kses_post( $profile_data['bio'] ); ?>
+			<?php if ( $atts['show_badges'] === 'yes' && ! empty( $profile_data['badges'] ) ) : ?>
+				<div class="contributor-badges">
+					<h3><?php _e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+					<div class="badges-grid">
+						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
+							<div class="badge-item">
+								<?php if ( ! empty( $badge['icon'] ) ) : ?>
+									<span class="dashicons <?php echo esc_attr( $badge['icon'] ); ?>"></span>
+								<?php endif; ?>
+								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
+							</div>
+						<?php endforeach; ?>
 					</div>
-				<?php endif; ?>
-
-				<?php if ( $atts['show_contributions'] === 'yes' && ! empty( $profile_data['contributions'] ) ) : ?>
-					<div class="contributor-contributions">
-						<h3><?php _e( 'Contributions', 'contributor-highlights' ); ?></h3>
-						<ul>
-							<?php foreach ( $profile_data['badges'] as $badge ) : ?>
-								<li><?php echo esc_html( $badge['name'] ); ?></li>
-							<?php endforeach; ?>
-						</ul>
-					</div>
-				<?php endif; ?>
-			</div>
+				</div>
+			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();
