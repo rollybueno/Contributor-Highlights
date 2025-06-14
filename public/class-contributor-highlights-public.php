@@ -107,21 +107,22 @@ class Contributor_Highlights_Public {
 			<div class="contributor-header">
 				<?php if ( $atts['show_avatar'] && ! empty( $profile_data['avatar'] ) ) : ?>
 					<div class="contributor-avatar">
+						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
 						<img src="<?php echo esc_url( str_replace( 's=100', 's=150', $profile_data['avatar'] ) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
 					</div>
 				<?php endif; ?>
 
 				<div class="contributor-info">
-					<h2 class="contributor-name"><?php esc_html_e( $profile_data['name'], 'contributor-highlights' ); ?></h2>
+					<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
 
 					<?php if ( $atts['show_meta'] && ! empty( $profile_data['user_meta'] ) ) : ?>
 						<div class="contributor-meta">
 							<?php if ( ! empty( $profile_data['user_meta']['job'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-businessman"></span>
-									<?php esc_html_e( $profile_data['user_meta']['job'], 'contributor-highlights' ); ?>
+									<?php echo esc_html( $profile_data['user_meta']['job'] ); ?>
 									<?php if ( ! empty( $profile_data['user_meta']['company'] ) ) : ?>
-										at <?php esc_html_e( $profile_data['user_meta']['company'], 'contributor-highlights' ); ?>
+										at <?php echo esc_html( $profile_data['user_meta']['company'] ); ?>
 									<?php endif; ?>
 								</div>
 							<?php endif; ?>
@@ -129,7 +130,7 @@ class Contributor_Highlights_Public {
 							<?php if ( ! empty( $profile_data['user_meta']['location'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-location"></span>
-									<?php esc_html_e( $profile_data['user_meta']['location'], 'contributor-highlights' ); ?>
+									<?php echo esc_html( $profile_data['user_meta']['location'] ); ?>
 								</div>
 							<?php endif; ?>
 
@@ -137,7 +138,7 @@ class Contributor_Highlights_Public {
 								<div class="meta-item">
 									<span class="dashicons dashicons-admin-site"></span>
 									<a href="<?php echo esc_url( $profile_data['user_meta']['website']['url'] ); ?>" target="_blank">
-										<?php esc_html_e( $profile_data['user_meta']['website']['text'], 'contributor-highlights' ); ?>
+										<?php echo esc_html( $profile_data['user_meta']['website']['text'] ); ?>
 									</a>
 								</div>
 							<?php endif; ?>
@@ -146,7 +147,7 @@ class Contributor_Highlights_Public {
 								<div class="meta-item">
 									<span class="dashicons dashicons-editor-code"></span>
 									<a href="<?php echo esc_url( $profile_data['user_meta']['github']['url'] ); ?>" target="_blank">
-										<?php esc_html_e( $profile_data['user_meta']['github']['text'], 'contributor-highlights' ); ?>
+										<?php echo esc_html( $profile_data['user_meta']['github']['text'] ); ?>
 									</a>
 								</div>
 							<?php endif; ?>
@@ -154,7 +155,7 @@ class Contributor_Highlights_Public {
 							<?php if ( ! empty( $profile_data['user_meta']['member-since'] ) ) : ?>
 								<div class="meta-item">
 									<span class="dashicons dashicons-calendar-alt"></span>
-									Member since <?php esc_html_e( $profile_data['user_meta']['member-since'], 'contributor-highlights' ); ?>
+									Member since <?php echo esc_html( $profile_data['user_meta']['member-since'] ); ?>
 								</div>
 							<?php endif; ?>
 						</div>
@@ -183,8 +184,8 @@ class Contributor_Highlights_Public {
 					<div class="badges-grid">
 						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
 							<div class="badge-item">
-								<span class="dashicons <?php esc_html_e( implode( ' ', $badge['class'] ) ); ?>"></span>
-								<span class="badge-name"><?php esc_html_e( $badge['name'] ); ?></span>
+								<span class="dashicons <?php echo esc_html( implode( ' ', $badge['class'] ) ); ?>"></span>
+								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
 							</div>
 						<?php endforeach; ?>
 					</div>

@@ -103,7 +103,8 @@ class Contributor_Highlights_Blocks {
 			'contributor-highlights-editor',
 			CH_PLUGIN_URL . 'build/index.js',
 			$asset['dependencies'],
-			$asset['version']
+			$asset['version'],
+			true
 		);
 
 		// Enqueue block editor styles
