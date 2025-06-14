@@ -13,14 +13,17 @@ class Contributor_Highlights_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-		// Clear any existing transients
 		global $wpdb;
+		// Clear any existing transients
+		// We are using dynamic transient naming, so we can't use the delete_transients() function
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching		
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
 				$wpdb->esc_like( '_transient_ch_' ) . '%'
 			)
 		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
