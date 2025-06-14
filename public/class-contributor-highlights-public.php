@@ -50,7 +50,7 @@ class Contributor_Highlights_Public {
 
 			<div class="contributor-info">
 				<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
-				
+
 				<?php if ( $atts['show_bio'] === 'yes' && ! empty( $profile_data['bio'] ) ) : ?>
 					<div class="contributor-bio">
 						<?php echo wp_kses_post( $profile_data['bio'] ); ?>
@@ -61,8 +61,8 @@ class Contributor_Highlights_Public {
 					<div class="contributor-contributions">
 						<h3><?php _e( 'Contributions', 'contributor-highlights' ); ?></h3>
 						<ul>
-							<?php foreach ( $profile_data['contributions'] as $contribution ) : ?>
-								<li><?php echo esc_html( $contribution ); ?></li>
+							<?php foreach ( $profile_data['badges'] as $badge ) : ?>
+								<li><?php echo esc_html( $badge['name'] ); ?></li>
 							<?php endforeach; ?>
 						</ul>
 					</div>
@@ -73,8 +73,8 @@ class Contributor_Highlights_Public {
 		return ob_get_clean();
 	}
 
-	private function get_profile_data( $username ) {
-		$transient_key = 'ch_profile_' . sanitize_title( $username );
+	private function get_wp_data( $username ) {
+		$transient_key = 'ch_wp_data_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -96,11 +96,21 @@ class Contributor_Highlights_Public {
 				return $profile_data->get_error_message();
 			}
 
-			// Cache the data for 1 hour
-			set_transient( $transient_key, $profile_data, HOUR_IN_SECONDS );
+			// Cache the data for 6 hour
+			set_transient( $transient_key, $profile_data, 6 * HOUR_IN_SECONDS );
 		}
+		return $profile_data;
+	}
 
-		error_log( print_r( $this->parse_profile_html( $profile_data ), true ) );
+	private function get_profile_data( $username ) {
+		$transient_key = 'ch_profile_data_' . sanitize_title( $username );
+		$profile_data  = get_transient( $transient_key );
+
+		if ( false === $profile_data ) {
+			$get_data     = $this->get_wp_data( $username );
+			$profile_data = $this->parse_profile_html( $get_data );
+			set_transient( $transient_key, $profile_data, 6 * HOUR_IN_SECONDS );
+		}
 
 		return $profile_data;
 	}
@@ -124,6 +134,7 @@ class Contributor_Highlights_Public {
 			'slack'         => '',
 			'contributions' => '',
 			'badges'        => array(),
+			'user_meta'     => array(),
 		);
 
 		// Get name
@@ -145,17 +156,39 @@ class Contributor_Highlights_Public {
 		}
 
 		// Get bio
-		$bio_nodes = trim( $xpath->evaluate( 'string(//div[@class="item-meta-about"]/p)' ) );
+		$bio_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-about"]/p' );
 		if ( $bio_nodes->length > 0 ) {
 			$profile_data['bio'] = trim( $bio_nodes->item( 0 )->textContent );
 		}
 
 		// Get contributions
-		$contribution_nodes = $xpath->query('//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
+		$contribution_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
 		if ( $contribution_nodes->length > 0 ) {
-			$profile_data['contributions'] = trim( $dom->saveHTML($contribution_nodes->item( 0 ) ) );
+			$profile_data['contributions'] = trim( $dom->saveHTML( $contribution_nodes->item( 0 ) ) );
 		}
 
+		// Get user meta
+		$user_meta_nodes = $xpath->query( '//ul[@id="user-meta"]/li[not(@id="user-social-media-accounts-tag")]' );
+		if ( $user_meta_nodes->length > 0 ) {
+			foreach ( $user_meta_nodes as $li ) {
+				$key = $li->getAttribute( 'id' ); // e.g., user-location
+				$key = preg_replace( '/^user-/', '', $key ); // Remove "user-" prefix
+
+				$strong = $li->getElementsByTagName( 'strong' )->item( 0 );
+				$aTag   = $strong ? $strong->getElementsByTagName( 'a' )->item( 0 ) : null;
+
+				if ( $aTag ) {
+					$profile_data['user_meta'][ $key ] = array(
+						'text' => trim( $aTag->textContent ),
+						'url'  => trim( $aTag->getAttribute( 'href' ) ),
+					);
+				} else {
+					$profile_data['user_meta'][ $key ] = $strong ? trim( $strong->textContent ) : '';
+				}
+			}
+		}
+
+		// Get badges
 		foreach ( $xpath->query( '//ul[@id="user-badges"]/li' ) as $li ) {
 			$badge_name = trim( $li->textContent );
 			$badge_icon = '';
