@@ -70,11 +70,12 @@ class Contributor_Highlights_Public {
 		$atts = shortcode_atts(
 			array(
 				'username'           => '',
-				'show_avatar'        => 'yes',
-				'show_bio'           => 'yes',
-				'show_contributions' => 'yes',
-				'show_badges'        => 'yes',
-				'show_meta'          => 'yes',
+				'compact_version'    => false,
+				'show_avatar'        => true,
+				'show_bio'           => true,
+				'show_contributions' => true,
+				'show_badges'        => true,
+				'show_meta'          => true,
 			),
 			$atts,
 			'contributor_profile'
@@ -82,6 +83,16 @@ class Contributor_Highlights_Public {
 
 		if ( empty( $atts['username'] ) ) {
 			return '<p>' . __( 'Please provide a WordPress.org username.', 'contributor-highlights' ) . '</p>';
+		}
+
+		// If compact version is true,
+		// only show meta and badges, and hide the name
+		if ( $atts['compact_version'] ) {
+			$atts['show_bio']           = false;
+			$atts['show_contributions'] = false;
+			$atts['show_avatar']        = true;
+			$atts['show_meta']          = true;
+			$atts['show_badges']        = true;
 		}
 
 		$profile_data = $this->get_profile_data( $atts['username'] );
@@ -94,7 +105,7 @@ class Contributor_Highlights_Public {
 		?>
 		<div class="contributor-profile">
 			<div class="contributor-header">
-				<?php if ( $atts['show_avatar'] === 'yes' && ! empty( $profile_data['avatar'] ) ) : ?>
+				<?php if ( $atts['show_avatar'] && ! empty( $profile_data['avatar'] ) ) : ?>
 					<div class="contributor-avatar">
 						<img src="<?php echo esc_url( str_replace( 's=100', 's=150', $profile_data['avatar'] ) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
 					</div>
@@ -103,7 +114,7 @@ class Contributor_Highlights_Public {
 				<div class="contributor-info">
 					<h2 class="contributor-name"><?php esc_html_e( $profile_data['name'], 'contributor-highlights' ); ?></h2>
 
-					<?php if ( $atts['show_meta'] === 'yes' && ! empty( $profile_data['user_meta'] ) ) : ?>
+					<?php if ( $atts['show_meta'] && ! empty( $profile_data['user_meta'] ) ) : ?>
 						<div class="contributor-meta">
 							<?php if ( ! empty( $profile_data['user_meta']['job'] ) ) : ?>
 								<div class="meta-item">
@@ -151,22 +162,24 @@ class Contributor_Highlights_Public {
 				</div>
 			</div>
 
-			<?php if ( $atts['show_bio'] === 'yes' && ! empty( $profile_data['bio'] ) ) : ?>
+			<?php if ( $atts['show_bio'] && ! empty( $profile_data['bio'] ) ) : ?>
 				<div class="contributor-bio">
 					<?php echo wp_kses_post( $profile_data['bio'] ); ?>
 				</div>	
 			<?php endif; ?>
 
-			<?php if ( $atts['show_contributions'] === 'yes' && ! empty( $profile_data['contributions'] ) ) : ?>
+			<?php if ( $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
 				<h3><?php esc_html_e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
 					<?php echo wp_kses_post( $profile_data['contributions'] ); ?>
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $atts['show_badges'] === 'yes' && ! empty( $profile_data['badges'] ) ) : ?>
+			<?php if ( $atts['show_badges'] && ! empty( $profile_data['badges'] ) ) : ?>
 				<div class="contributor-badges">
-					<h3><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+					<?php if ( ! $atts['compact_version'] ) : ?>
+						<h3><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+					<?php endif; ?>
 					<div class="badges-grid">
 						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
 							<div class="badge-item">

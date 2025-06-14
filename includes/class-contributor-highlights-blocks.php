@@ -50,6 +50,10 @@ class Contributor_Highlights_Blocks {
 						'type'    => 'string',
 						'default' => '',
 					),
+					'compactVersion'    => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
 					'showAvatar'        => array(
 						'type'    => 'boolean',
 						'default' => true,
@@ -135,11 +139,12 @@ class Contributor_Highlights_Blocks {
 			$shortcode .= ' username="' . esc_attr( $attributes['username'] ) . '"';
 		}
 
-		$shortcode .= ' show_avatar="' . ( $attributes['showAvatar'] ? 'yes' : 'no' ) . '"';
-		$shortcode .= ' show_bio="' . ( $attributes['showBio'] ? 'yes' : 'no' ) . '"';
-		$shortcode .= ' show_contributions="' . ( $attributes['showContributions'] ? 'yes' : 'no' ) . '"';
-		$shortcode .= ' show_badges="' . ( $attributes['showBadges'] ? 'yes' : 'no' ) . '"';
-		$shortcode .= ' show_meta="' . ( $attributes['showMeta'] ? 'yes' : 'no' ) . '"';
+		$shortcode .= ' compact_version="' . $attributes['compactVersion'] . '"';
+		$shortcode .= ' show_avatar="' . $attributes['showAvatar'] . '"';
+		$shortcode .= ' show_bio="' . $attributes['showBio'] . '"';
+		$shortcode .= ' show_contributions="' . $attributes['showContributions'] . '"';
+		$shortcode .= ' show_badges="' . $attributes['showBadges'] . '"';
+		$shortcode .= ' show_meta="' . $attributes['showMeta'] . '"';
 		$shortcode .= ']';
 
 		$wrapper_attributes = get_block_wrapper_attributes(array(

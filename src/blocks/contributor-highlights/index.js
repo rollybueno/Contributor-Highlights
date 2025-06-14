@@ -24,6 +24,10 @@ registerBlockType('contributor-highlights/profile', {
             type: 'boolean',
             default: true,
         },
+        compactVersion: {
+            type: 'boolean',
+            default: false,
+        },
         showBio: {
             type: 'boolean',
             default: true,
@@ -46,6 +50,7 @@ registerBlockType('contributor-highlights/profile', {
         const blockProps = useBlockProps();
         const {
             username,
+            compactVersion,
             showAvatar,
             showBio,
             showContributions,
@@ -62,6 +67,12 @@ registerBlockType('contributor-highlights/profile', {
                             value={username}
                             onChange={(value) => setAttributes({ username: value })}
                             help={__('Enter the WordPress.org username to display', 'contributor-highlights')}
+                        />
+                        <ToggleControl
+                            label={__('Compact Version', 'contributor-highlights')}
+                            checked={compactVersion}
+                            onChange={() => setAttributes({ compactVersion: !compactVersion })}
+                            help={__('Show a compact version of the card, with only meta information and badges without any heading. Overrides other settings.', 'contributor-highlights')}
                         />
                         <ToggleControl
                             label={__('Show Avatar', 'contributor-highlights')}
