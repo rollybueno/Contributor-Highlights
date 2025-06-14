@@ -54,28 +54,4 @@ class Contributor_Highlights_Admin {
 	public function enqueue_scripts() {
 		wp_enqueue_script( $this->plugin_name, CH_PLUGIN_URL . 'admin/js/contributor-highlights-admin.js', array( 'jquery' ), $this->version, false );
 	}
-
-	/**
-	 * Add an options page under the Settings submenu.
-	 *
-	 * @since    1.0.0
-	 */
-	public function add_plugin_admin_menu() {
-		add_options_page(
-			__( 'Contributor Highlights Settings', 'contributor-highlights' ),
-			__( 'Contributor Highlights', 'contributor-highlights' ),
-			'manage_options',
-			$this->plugin_name,
-			array( $this, 'display_plugin_setup_page' )
-		);
-	}
-
-	/**
-	 * Render the settings page for this plugin.
-	 *
-	 * @since    1.0.0
-	 */
-	public function display_plugin_setup_page() {
-		include_once CH_PLUGIN_DIR . 'admin/partials/contributor-highlights-admin-display.php';
-	}
 }

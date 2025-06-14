@@ -4,8 +4,6 @@ import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 
-console.log('Contributor Highlights: Loading block script');
-
 registerBlockType('contributor-highlights/profile', {
     apiVersion: 3,
     title: __('Contributor Highlights', 'contributor-highlights'),
@@ -107,6 +105,4 @@ registerBlockType('contributor-highlights/profile', {
     },
 
     save: () => null,
-});
-
-console.log('Contributor Highlights: Block registered'); 
+}); 
