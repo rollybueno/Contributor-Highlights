@@ -4,8 +4,12 @@ import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 
-registerBlockType('contributor-highlights/profile', {
-    apiVersion: 2,
+console.log('Contributor Highlights: Loading block script');
+
+const blockName = 'contributor-highlights/profile';
+
+const blockSettings = {
+    apiVersion: 3,
     title: __('Contributor Highlights', 'contributor-highlights'),
     description: __('Display a WordPress.org contributor profile.', 'contributor-highlights'),
     icon: 'admin-users',
@@ -94,7 +98,7 @@ registerBlockType('contributor-highlights/profile', {
                         <p>{__('Please enter a WordPress.org username in the block settings.', 'contributor-highlights')}</p>
                     ) : (
                         <ServerSideRender
-                            block="contributor-highlights/profile"
+                            block={blockName}
                             attributes={attributes}
                         />
                     )}
@@ -104,4 +108,8 @@ registerBlockType('contributor-highlights/profile', {
     },
 
     save: () => null, // Dynamic block, render on server
-}); 
+};
+
+console.log('Contributor Highlights: Registering block', blockName);
+registerBlockType(blockName, blockSettings);
+console.log('Contributor Highlights: Block registered'); 

@@ -1,8 +1,13 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const path = require('path');
 
 module.exports = {
     ...defaultConfig,
     entry: {
-        'contributor-highlights-blocks': './src/blocks/contributor-highlights/index.js',
+        index: path.resolve(__dirname, 'src/blocks/contributor-highlights/index.js'),
+    },
+    output: {
+        path: path.resolve(__dirname, 'build'),
+        filename: '[name].js',
     },
 }; 
