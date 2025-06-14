@@ -37,6 +37,10 @@ class Contributor_Highlights_Blocks {
 				'editor_script'   => 'contributor-highlights-editor',
 				'editor_style'    => 'contributor-highlights-editor',
 				'render_callback' => array( $this, 'render_block' ),
+				'supports'        => array(
+					'align' => array( 'wide', 'full' ),
+					'html'  => false,
+				),
 				'attributes'      => array(
 					'username'          => array(
 						'type'    => 'string',
@@ -61,6 +65,10 @@ class Contributor_Highlights_Blocks {
 					'showMeta'          => array(
 						'type'    => 'boolean',
 						'default' => true,
+					),
+					'align'             => array(
+						'type'    => 'string',
+						'default' => '',
 					),
 				),
 			)
@@ -126,6 +134,14 @@ class Contributor_Highlights_Blocks {
 		$shortcode .= ' show_meta="' . ( $attributes['showMeta'] ? 'yes' : 'no' ) . '"';
 		$shortcode .= ']';
 
-		return do_shortcode( $shortcode );
+		$wrapper_attributes = get_block_wrapper_attributes(array(
+			'class' => !empty($attributes['align']) ? 'align' . $attributes['align'] : '',
+		));
+		
+		return sprintf(
+			'<div %s>%s</div>',
+			$wrapper_attributes,
+			do_shortcode($shortcode)
+		);
 	}
 }
