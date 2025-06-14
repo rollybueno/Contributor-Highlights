@@ -82,6 +82,7 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 2. The block inserter in the WordPress editor, demonstrating how to find the Contributor Highlights block by typing “/Contributor” in a post or page.
 3. Block settings panel showing options to configure the Contributor Highlights block, including WordPress.org username and display preferences.
 4. Front-end view of a Contributor Highlights card on a live page, showing contributor avatar, name, bio, contribution badges, and meta information styled within the site’s theme.
+5. Compact version, omitting bio, contributions and badge heading
 
 == Changelog ==
 
