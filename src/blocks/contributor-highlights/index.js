@@ -6,14 +6,13 @@ import ServerSideRender from '@wordpress/server-side-render';
 
 console.log('Contributor Highlights: Loading block script');
 
-const blockName = 'contributor-highlights/profile';
-
-const blockSettings = {
+registerBlockType('contributor-highlights/profile', {
     apiVersion: 3,
     title: __('Contributor Highlights', 'contributor-highlights'),
     description: __('Display a WordPress.org contributor profile.', 'contributor-highlights'),
     icon: 'admin-users',
     category: 'widgets',
+    keywords: ['contributor', 'profile', 'wordpress.org', 'badges'],
     supports: {
         html: false,
         align: ['wide', 'full'],
@@ -98,7 +97,7 @@ const blockSettings = {
                         <p>{__('Please enter a WordPress.org username in the block settings.', 'contributor-highlights')}</p>
                     ) : (
                         <ServerSideRender
-                            block={blockName}
+                            block="contributor-highlights/profile"
                             attributes={attributes}
                         />
                     )}
@@ -107,9 +106,7 @@ const blockSettings = {
         );
     },
 
-    save: () => null, // Dynamic block, render on server
-};
+    save: () => null,
+});
 
-console.log('Contributor Highlights: Registering block', blockName);
-registerBlockType(blockName, blockSettings);
 console.log('Contributor Highlights: Block registered'); 
