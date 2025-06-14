@@ -71,6 +71,11 @@ registerBlockType('contributor-highlights/profile', {
                             onChange={() => setAttributes({ showAvatar: !showAvatar })}
                         />
                         <ToggleControl
+                            label={__('Show Meta', 'contributor-highlights')}
+                            checked={showMeta}
+                            onChange={() => setAttributes({ showMeta: !showMeta })}
+                        />
+                        <ToggleControl
                             label={__('Show Bio', 'contributor-highlights')}
                             checked={showBio}
                             onChange={() => setAttributes({ showBio: !showBio })}
@@ -84,11 +89,6 @@ registerBlockType('contributor-highlights/profile', {
                             label={__('Show Badges', 'contributor-highlights')}
                             checked={showBadges}
                             onChange={() => setAttributes({ showBadges: !showBadges })}
-                        />
-                        <ToggleControl
-                            label={__('Show Meta', 'contributor-highlights')}
-                            checked={showMeta}
-                            onChange={() => setAttributes({ showMeta: !showMeta })}
                         />
                     </PanelBody>
                 </InspectorControls>

@@ -88,11 +88,20 @@ class Contributor_Highlights_Blocks {
 			$asset['version']
 		);
 
+		// Enqueue block editor styles
 		wp_enqueue_style(
 			'contributor-highlights-editor',
 			CH_PLUGIN_URL . 'build/index.css',
 			array(),
 			$asset['version']
+		);
+
+		// Enqueue frontend styles in editor
+		wp_enqueue_style(
+			'contributor-highlights-public',
+			CH_PLUGIN_URL . 'public/css/contributor-highlights-public.css',
+			array(),
+			CH_VERSION
 		);
 	}
 
