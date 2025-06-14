@@ -122,7 +122,8 @@ class Contributor_Highlights_Public {
 			'avatar'        => '',
 			'bio'           => '',
 			'slack'         => '',
-			'contributions' => array(),
+			'contributions' => '',
+			'badges'        => array(),
 		);
 
 		// Get name
@@ -150,9 +151,28 @@ class Contributor_Highlights_Public {
 		}
 
 		// Get contributions
-		$contribution_nodes = $xpath->evaluate( 'string(//div[@class="item-meta-contribution"]/p)' );
-		foreach ( $contribution_nodes as $node ) {
-			$profile_data['contributions'][] = trim( $node->textContent );
+		$contribution_nodes = $xpath->query('//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
+		if ( $contribution_nodes->length > 0 ) {
+			$profile_data['contributions'] = trim( $dom->saveHTML($contribution_nodes->item( 0 ) ) );
+		}
+
+		foreach ( $xpath->query( '//ul[@id="user-badges"]/li' ) as $li ) {
+			$badge_name = trim( $li->textContent );
+			$badge_icon = '';
+			$badge_div  = $xpath->query( './/div[contains(@class, "badge")]', $li )->item( 0 );
+			if ( $badge_div && $badge_div->hasAttributes() ) {
+				$classes = explode( ' ', $badge_div->getAttribute( 'class' ) );
+				foreach ( $classes as $class ) {
+					if ( strpos( $class, 'dashicons-' ) !== false ) {
+						$badge_icon = $class;
+						break;
+					}
+				}
+			}
+			$profile_data['badges'][] = array(
+				'name' => $badge_name,
+				'icon' => $badge_icon,
+			);
 		}
 
 		// If we couldn't find the data, try alternative selectors
@@ -168,11 +188,6 @@ class Contributor_Highlights_Public {
 			if ( $avatar_nodes->length > 0 ) {
 				$profile_data['avatar'] = $avatar_nodes->item( 0 )->getAttribute( 'src' );
 			}
-		}
-
-		// Debug information
-		if ( empty( $profile_data['name'] ) || empty( $profile_data['avatar'] ) || empty( $profile_data['bio'] ) ) {
-			error_log( 'Contributor Highlights - Profile data not found for HTML: ' . substr( $html, 0, 500 ) );
 		}
 
 		return $profile_data;
