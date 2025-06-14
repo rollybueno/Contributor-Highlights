@@ -127,9 +127,7 @@ class Contributor_Highlights_Public {
 					<div class="badges-grid">
 						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
 							<div class="badge-item">
-								<?php if ( ! empty( $badge['icon'] ) ) : ?>
-									<span class="dashicons <?php echo implode( ' ', $badge['class'] ); ?>"></span>
-								<?php endif; ?>
+								<span class="dashicons <?php echo implode( ' ', $badge['class'] ); ?>"></span>
 								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
 							</div>
 						<?php endforeach; ?>

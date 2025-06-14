@@ -145,257 +145,453 @@
 }
 
 /* WordPress.org badge colors and borders */
-.badge-item .badge-accessibility-contributor {
-    color: rgb(17, 121, 157);
+.badge-unknown {
     background: white;
-    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+    box-shadow: 0 0 0 4px rgb(199, 199, 199);
+}
+.badge-unknown:before {
+    color: rgb(199, 199, 199);
 }
 
-.badge-item .badge-accessibility {
-    color: rgb(17, 121, 157);
+.badge-themes-reviewer {
+    background: rgba(78, 50, 136, 0.25);
+    box-shadow: 0 0 0 4px rgb(78, 50, 136);
+}
+.badge-themes-reviewer:before {
+    color: rgb(78, 50, 136);
+}
+
+.badge-themes {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(78, 50, 136);
+}
+.badge-themes:before {
+    color: rgb(78, 50, 136);
+}
+
+.badge-plugins-reviewer {
+    background: rgba(240, 103, 35, 0.25);
+    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+}
+.badge-plugins-reviewer:before {
+    color: rgb(240, 103, 35);
+}
+
+.badge-plugins {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+}
+.badge-plugins:before {
+    color: rgb(240, 103, 35);
+}
+
+.badge-community {
     background: rgba(17, 121, 157, 0.25);
     box-shadow: 0 0 0 4px rgb(17, 121, 157);
 }
-
-.badge-item .dashicons-editor-code {
-    color: rgb(205, 0, 0);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+.badge-community:before {
+    color: rgb(17, 121, 157);
 }
 
-.badge-item .dashicons-networking {
+.badge-community-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+.badge-community-contributor:before {
+    color: rgb(17, 121, 157);
+}
+
+.badge-meta {
+    background: rgba(174, 173, 173, 0.25);
+    box-shadow: 0 0 0 4px rgb(174, 173, 173);
+}
+.badge-meta:before {
     color: rgb(174, 173, 173);
+}
+
+.badge-meta-contributor {
     background: white;
     box-shadow: 0 0 0 4px rgb(174, 173, 173);
 }
-
-.badge-item .dashicons-layout {
-    color: rgb(146, 75, 179);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+.badge-meta-contributor:before {
+    color: rgb(174, 173, 173);
 }
 
-.badge-item .dashicons-camera {
-    color: rgb(203, 0, 240);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+.badge-code-committer {
+    background: rgba(205, 0, 0, 0.25);
+    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+}
+.badge-code-committer:before {
+    color: rgb(205, 0, 0);
 }
 
-.badge-item .dashicons-admin-plugins {
-    color: rgb(240, 103, 35);
+.badge-code {
     background: white;
-    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+}
+.badge-code:before {
+    color: rgb(205, 0, 0);
 }
 
-.badge-item .dashicons-welcome-learn-more {
-    color: rgb(233, 192, 45);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(233, 192, 45);
+.badge-support {
+    background: rgba(51, 180, 206, 0.25);
+    box-shadow: 0 0 0 4px rgb(51, 180, 206);
+}
+.badge-support:before {
+    color: rgb(51, 180, 206);
 }
 
-.badge-item .dashicons-translation {
-    color: rgb(195, 34, 131);
+.badge-support-contributor {
     background: white;
-    box-shadow: 0 0 0 4px rgb(195, 34, 131);
+    box-shadow: 0 0 0 4px rgb(51, 180, 206);
+}
+.badge-support-contributor:before {
+    color: rgb(51, 180, 206);
 }
 
-.badge-item .dashicons-tickets {
-    color: rgb(247, 173, 67);
+.badge-wordpress-tv {
+    background: rgba(115, 173, 48, 0.25);
+    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+}
+.badge-wordpress-tv:before {
+    color: rgb(115, 173, 48);
+}
+
+.badge-wordpress-tv-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+}
+.badge-wordpress-tv-contributor:before {
+    color: rgb(115, 173, 48);
+}
+
+.badge-organizer {
     background: white;
     box-shadow: 0 0 0 4px rgb(247, 173, 67);
 }
-
-.badge-item .dashicons-video-alt2 {
-    color: rgb(115, 173, 48);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(115, 173, 48);
-}
-
-/* Additional WordPress.org badges */
-.badge-item .dashicons-admin-appearance {
-    color: rgb(146, 75, 179);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(146, 75, 179);
-}
-
-.badge-item .dashicons-admin-generic {
-    color: rgb(174, 173, 173);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(174, 173, 173);
-}
-
-.badge-item .dashicons-admin-tools {
-    color: rgb(205, 0, 0);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(205, 0, 0);
-}
-
-.badge-item .dashicons-admin-users {
-    color: rgb(17, 121, 157);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(17, 121, 157);
-}
-
-.badge-item .dashicons-admin-comments {
-    color: rgb(240, 103, 35);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(240, 103, 35);
-}
-
-.badge-item .dashicons-admin-settings {
-    color: rgb(233, 192, 45);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(233, 192, 45);
-}
-
-.badge-item .dashicons-admin-network {
-    color: rgb(174, 173, 173);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(174, 173, 173);
-}
-
-.badge-item .dashicons-admin-home {
-    color: rgb(115, 173, 48);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(115, 173, 48);
-}
-
-.badge-item .dashicons-admin-collapse {
-    color: rgb(195, 34, 131);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(195, 34, 131);
-}
-
-.badge-item .dashicons-admin-links {
-    color: rgb(203, 0, 240);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(203, 0, 240);
-}
-
-.badge-item .dashicons-admin-post {
+.badge-organizer:before {
     color: rgb(247, 173, 67);
+}
+
+.badge-speaker {
     background: white;
     box-shadow: 0 0 0 4px rgb(247, 173, 67);
 }
-
-.badge-item .dashicons-admin-media {
-    color: rgb(203, 0, 240);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+.badge-speaker:before {
+    color: rgb(247, 173, 67);
 }
 
-.badge-item .dashicons-admin-page {
-    color: rgb(146, 75, 179);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+.badge-accessibility {
+    background: rgba(17, 121, 157, 0.25);
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+.badge-accessibility:before {
+    color: rgb(17, 121, 157);
 }
 
-.badge-item .dashicons-admin-plugins {
-    color: rgb(240, 103, 35);
+.badge-accessibility-contributor {
     background: white;
-    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+.badge-accessibility-contributor:before {
+    color: rgb(17, 121, 157);
 }
 
-.badge-item .dashicons-admin-settings {
+.badge-documentation {
+    background: rgba(59, 114, 54, 0.25);
+    box-shadow: 0 0 0 4px rgb(59, 114, 54);
+}
+.badge-documentation:before {
+    color: rgb(59, 114, 54);
+}
+
+.badge-documentation-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(59, 114, 54);
+}
+.badge-documentation-contributor:before {
+    color: rgb(59, 114, 54);
+}
+
+.badge-mobile {
+    background: rgba(251, 161, 108, 0.25);
+    box-shadow: 0 0 0 4px rgb(251, 161, 108);
+}
+.badge-mobile:before {
+    color: rgb(251, 161, 108);
+}
+
+.badge-training{
+    background: rgba(233, 192, 45, 0.25);
+    box-shadow: 0 0 0 4px rgb(233, 192, 45);
+}
+.badge-training:before {
     color: rgb(233, 192, 45);
+}
+
+.badge-training-contributor {
     background: white;
     box-shadow: 0 0 0 4px rgb(233, 192, 45);
 }
-
-.badge-item .dashicons-admin-site {
-    color: rgb(115, 173, 48);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+.badge-training-contributor:before {
+    color: rgb(233, 192, 45);
 }
 
-.badge-item .dashicons-admin-tools {
-    color: rgb(205, 0, 0);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+.badge-translation-editor {
+    background: rgba(195, 34, 131, 0.25);
+    box-shadow: 0 0 0 4px rgb(195, 34, 131);
+}
+.badge-translation-editor:before {
+    color: rgb(195, 34, 131);
 }
 
-.badge-item .dashicons-admin-users {
-    color: rgb(17, 121, 157);
+.badge-translation-contributor {
     background: white;
-    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+    box-shadow: 0 0 0 4px rgb(195, 34, 131);
+}
+.badge-translation-contributor:before {
+    color: rgb(195, 34, 131);
 }
 
-.badge-item .dashicons-admin-generic {
-    color: rgb(174, 173, 173);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(174, 173, 173);
+.badge-design {
+    background: rgba(238, 194, 106, 0.25);
+    box-shadow: 0 0 0 4px rgb(238, 194, 106);
 }
-
-.badge-item .dashicons-buddicons-replies {
-    color: rgb(45, 142, 66);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(45, 142, 66);
-}
-
-.badge-item .dashicons-buddicons-replies {
-    color: rgb(45, 142, 66);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(45, 142, 66);
-}
-
-.badge-item .dashicons-groups {
-    color: rgb(17, 121, 157);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(17, 121, 157);
-}
-
-.badge-item .dashicons-art {
+.badge-design:before {
     color: rgb(238, 194, 106);
+}
+
+.badge-design-contributor {
     background: white;
     box-shadow: 0 0 0 4px rgb(238, 194, 106);
 }
-
-.badge-item .dashicons-cloud {
-    color: rgb(83, 88, 166);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(83, 88, 166);
+.badge-design-contributor:before {
+    color: rgb(238, 194, 106);
 }
 
-.badge-item .dashicons-megaphone {
-    color: rgb(247, 173, 67);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+.badge-marketing {
+    background: rgba(71, 190, 167, 0.25);
+    box-shadow: 0 0 0 4px rgb(71, 190, 167);
 }
-
-.badge-item .dashicons-location {
-    color: rgb(247, 173, 67);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(247, 173, 67);
-}
-
-.badge-item .dashicons-testimonial {
-    color: rgb(0, 128, 128);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(0, 128, 128);
-}
-
-.badge-item .dashicons-format-status {
+.badge-marketing:before {
     color: rgb(71, 190, 167);
+}
+
+.badge-marketing-contributor {
     background: white;
     box-shadow: 0 0 0 4px rgb(71, 190, 167);
 }
-
-.badge-item .dashicons-nametag {
-    color: rgb(247, 173, 67);
-    background: white;
-    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+.badge-marketing-contributor:before {
+    color: rgb(71, 190, 167);
 }
 
-.badge-item .dashicons-welcome-view-site {
+.badge-media-corps-team,
+.badge-media-corps-contributor {
+    background: rgba(19, 159, 148, 0.25);
+    box-shadow: 0 0 0 4px rgb(19, 159, 148);
+}
+.badge-media-corps-contributor {
+    background: white;
+}
+.badge-media-corps-team:before,
+.badge-media-corps-contributor:before {
+    color: rgb(19, 159, 148);
+}
+
+.badge-wp-cli {
+    background: rgba(66, 66, 66, 0.25);
+    box-shadow: 0 0 0 4px rgb(66, 66, 66);
+}
+.badge-wp-cli:before {
+    color: rgb(66, 66, 66);
+}
+
+.badge-wp-cli-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(66, 66, 66);
+}
+.badge-wp-cli-contributor:before {
+    color: rgb(66, 66, 66);
+}
+
+.badge-hosting {
+    background: rgba(83, 88, 166, 0.25);
+    box-shadow: 0 0 0 4px rgb(83, 88, 166);
+}
+.badge-hosting:before {
+    color: rgb(83, 88, 166);
+}
+
+.badge-hosting-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(83, 88, 166);
+}
+.badge-hosting-contributor:before {
+    color: rgb(83, 88, 166);
+}
+
+.badge-tide {
+    background: rgba(21, 38, 255, 0.25);
+    box-shadow: 0 0 0 4px rgb(21, 38, 255);
+}
+.badge-tide:before {
+    color: rgb(21, 38, 255);
+}
+
+.badge-tide-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(21, 38, 255);
+}
+.badge-tide-contributor:before {
+    color: rgb(21, 38, 255);
+}
+
+.badge-security-team,
+.badge-security-contributor {
+    background: rgba(0, 204, 58, 0.25);
+    box-shadow: 0 0 0 4px rgb(0, 204, 58);
+}
+
+.badge-security-team:before,
+.badge-security-contributor:before {
+    color: rgb(0, 204, 58);
+}
+
+.badge-security-contributor {
+    background: unset;
+}
+
+.badge-bbpress {
+    background: rgba(45, 142, 66, 0.25);
+    box-shadow: 0 0 0 4px rgb(45, 142, 66);
+}
+.badge-bbpress:before {
+    color: rgb(45, 142, 66);
+}
+
+.badge-bbpress-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(45, 142, 66);
+}
+.badge-bbpress-contributor:before {
+    color: rgb(45, 142, 66);
+}
+
+.badge-buddypress, .badge-buddypress-contributor {
+    box-shadow: 0 0 0 4px rgb(216, 72, 0);
+    background: url("../images/buddypress-contributor.svg") no-repeat center/75%;
+}
+
+.badge-buddypress {
+    background-color: rgb(216, 72, 0, 0.25);
+}
+
+.badge-test {
+    background: rgba(0, 128, 128, 0.25);
+    box-shadow: 0 0 0 4px rgb(0, 128, 128);
+}
+.badge-test:before {
     color: rgb(0, 128, 128);
+}
+
+.badge-test-contributor {
     background: white;
     box-shadow: 0 0 0 4px rgb(0, 128, 128);
 }
+.badge-test-contributor:before {
+    color: rgb(0, 128, 128);
+}
 
-.badge-item .dashicons-arrow-right-alt2 {
-    color: rgb(66, 66, 66);
+.badge-openverse {
+    background: rgba(197, 43, 155, 0.25);
+    box-shadow: 0 0 0 4px rgb(197, 43, 155);
+}
+.badge-openverse:before {
+    color: rgb(197, 43, 155);
+}
+
+.badge-openverse-contributor {
     background: white;
-    box-shadow: 0 0 0 4px rgb(66, 66, 66);
+    box-shadow: 0 0 0 4px rgb(197, 43, 155);
+}
+.badge-openverse-contributor:before {
+    color: rgb(197, 43, 155);
+}
+
+.badge-openverse, .badge-openverse-contributor {
+    background-image: url("../images/openverse-contributor.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.badge-patterns-team,
+.badge-pattern-author {
+    background: rgba(146, 75, 179, 0.25);
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+}
+.badge-pattern-author {
+    background: white;
+}
+.badge-patterns-team:before,
+.badge-pattern-author:before {
+    color: rgb(146, 75, 179);
+}
+
+.badge-photos-team,
+.badge-photo-contributor {
+    background: rgba(203, 0, 240, 0.25);
+    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+}
+.badge-photo-contributor {
+    background: white;
+}
+.badge-photos-team:before,
+.badge-photo-contributor:before {
+    color: rgb(203, 0, 240);
+}
+
+.badge-performance-team {
+    background: rgba(0, 115, 170, 0.25);
+    box-shadow: 0 0 0 4px rgb(0, 115, 170);
+}
+.badge-performance-team:before {
+    color: rgb(0, 115, 170);
+}
+
+.badge-performance-contributor {
+    background: white;
+    box-shadow: 0 0 0 4px rgb(0, 115, 170);
+}
+.badge-performance-contributor:before {
+    color: rgb(0, 115, 170);
+}
+
+.badge-performance-team, .badge-performance-contributor {
+    background-image: url("../images/performance-contributor.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.badge-sustainability-team,
+.badge-sustainability-contributor {
+    background: rgba(23, 127, 106, 0.25);
+    box-shadow: 0 0 0 4px rgb(23, 127, 106);
+}
+.badge-sustainability-contributor {
+    background: white;
+}
+.badge-sustainability-team:before,
+.badge-sustainability-contributor:before {
+    color: rgb(23, 127, 106);
+}
+
+.badge-wordcamp-volunteer {
+    background: #fff;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-wordcamp-volunteer:before {
+    color: rgb(247, 173, 67);
 }
 
 .badge-name {
