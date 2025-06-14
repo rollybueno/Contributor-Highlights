@@ -50,6 +50,7 @@ class Contributor_Highlights {
 		$this->load_dependencies();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_blocks_hooks();
 	}
 
 	/**
@@ -60,14 +61,19 @@ class Contributor_Highlights {
 	 * - Contributor_Highlights_Loader. Orchestrates the hooks of the plugin.
 	 * - Contributor_Highlights_Admin. Defines all hooks for the admin area.
 	 * - Contributor_Highlights_Public. Defines all hooks for the public side of the site.
+	 * - Contributor_Highlights_Blocks. Defines all hooks for the blocks functionality.
+	 *
+	 * Create an instance of the loader which will be used to register the hooks
+	 * with WordPress.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function load_dependencies() {
-		require_once CH_PLUGIN_DIR . 'includes/class-contributor-highlights-loader.php';
-		require_once CH_PLUGIN_DIR . 'admin/class-contributor-highlights-admin.php';
-		require_once CH_PLUGIN_DIR . 'public/class-contributor-highlights-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-contributor-highlights-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-contributor-highlights-blocks.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-contributor-highlights-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-contributor-highlights-public.php';
 
 		$this->loader = new Contributor_Highlights_Loader();
 	}
@@ -100,6 +106,17 @@ class Contributor_Highlights {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_shortcode( 'contributor_profile', $plugin_public, 'display_contributor_profile' );
+	}
+
+	/**
+	 * Register all of the hooks related to the blocks functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_blocks_hooks() {
+		$plugin_blocks = new Contributor_Highlights_Blocks();
 	}
 
 	/**
