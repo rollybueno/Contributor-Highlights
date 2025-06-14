@@ -1,0 +1,43 @@
+.contributor-highlights-admin-content {
+    max-width: 800px;
+    margin-top: 2em;
+}
+
+.contributor-highlights-admin-section {
+    background: #fff;
+    padding: 2em;
+    margin-bottom: 2em;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-highlights-admin-section h3 {
+    margin-top: 0;
+    color: #23282d;
+}
+
+.contributor-highlights-admin-section h4 {
+    margin: 1.5em 0 1em;
+    color: #23282d;
+}
+
+.contributor-highlights-admin-section code {
+    display: inline-block;
+    padding: 0.5em 1em;
+    background: #f0f0f0;
+    border-radius: 4px;
+    font-size: 1.1em;
+}
+
+.contributor-highlights-admin-section ul {
+    margin-left: 1.5em;
+}
+
+.contributor-highlights-admin-section li {
+    margin-bottom: 0.5em;
+}
+
+.contributor-highlights-admin-section li code {
+    font-size: 0.9em;
+    padding: 0.2em 0.5em;
+} 

@@ -1,0 +1,63 @@
+.contributor-profile {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 2em;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-avatar {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.contributor-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #f0f0f0;
+}
+
+.contributor-info {
+    text-align: center;
+}
+
+.contributor-name {
+    margin: 0 0 1em;
+    color: #23282d;
+    font-size: 2em;
+}
+
+.contributor-bio {
+    margin-bottom: 2em;
+    line-height: 1.6;
+    color: #444;
+}
+
+.contributor-contributions {
+    text-align: left;
+    margin-top: 2em;
+    padding-top: 2em;
+    border-top: 1px solid #f0f0f0;
+}
+
+.contributor-contributions h3 {
+    margin-bottom: 1em;
+    color: #23282d;
+}
+
+.contributor-contributions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contributor-contributions li {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.contributor-contributions li:last-child {
+    border-bottom: none;
+} 
