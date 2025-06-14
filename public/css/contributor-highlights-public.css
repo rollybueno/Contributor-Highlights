@@ -119,27 +119,216 @@
 .badge-item {
     display: flex;
     align-items: center;
-    gap: 0.5em;
-    padding: 0.75em;
-    background: #f9f9f9;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    gap: 0.75em;
+    padding: 0.75em 1em;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 48px;
 }
 
 .badge-item:hover {
-    background: #f0f0f0;
+    background: #f9f9f9;
+    border-color: #ddd;
 }
 
 .badge-item .dashicons {
-    color: #0073aa;
     font-size: 1.2em;
-    width: 1.2em;
-    height: 1.2em;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+/* WordPress.org badge colors and borders */
+.badge-item .dashicons-universal-access {
+    color: rgb(17, 121, 157);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+
+.badge-item .dashicons-editor-code {
+    color: rgb(205, 0, 0);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+}
+
+.badge-item .dashicons-networking {
+    color: rgb(174, 173, 173);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(174, 173, 173);
+}
+
+.badge-item .dashicons-layout {
+    color: rgb(146, 75, 179);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+}
+
+.badge-item .dashicons-camera {
+    color: rgb(203, 0, 240);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+}
+
+.badge-item .dashicons-admin-plugins {
+    color: rgb(240, 103, 35);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+}
+
+.badge-item .dashicons-welcome-learn-more {
+    color: rgb(233, 192, 45);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(233, 192, 45);
+}
+
+.badge-item .dashicons-translation {
+    color: rgb(195, 34, 131);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(195, 34, 131);
+}
+
+.badge-item .dashicons-tickets {
+    color: rgb(247, 173, 67);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-item .dashicons-video-alt2 {
+    color: rgb(115, 173, 48);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+}
+
+/* Additional WordPress.org badges */
+.badge-item .dashicons-admin-appearance {
+    color: rgb(146, 75, 179);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+}
+
+.badge-item .dashicons-admin-generic {
+    color: rgb(174, 173, 173);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(174, 173, 173);
+}
+
+.badge-item .dashicons-admin-tools {
+    color: rgb(205, 0, 0);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+}
+
+.badge-item .dashicons-admin-users {
+    color: rgb(17, 121, 157);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+
+.badge-item .dashicons-admin-comments {
+    color: rgb(240, 103, 35);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+}
+
+.badge-item .dashicons-admin-settings {
+    color: rgb(233, 192, 45);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(233, 192, 45);
+}
+
+.badge-item .dashicons-admin-network {
+    color: rgb(174, 173, 173);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(174, 173, 173);
+}
+
+.badge-item .dashicons-admin-home {
+    color: rgb(115, 173, 48);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+}
+
+.badge-item .dashicons-admin-collapse {
+    color: rgb(195, 34, 131);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(195, 34, 131);
+}
+
+.badge-item .dashicons-admin-links {
+    color: rgb(203, 0, 240);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+}
+
+.badge-item .dashicons-admin-post {
+    color: rgb(247, 173, 67);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-item .dashicons-admin-media {
+    color: rgb(203, 0, 240);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(203, 0, 240);
+}
+
+.badge-item .dashicons-admin-page {
+    color: rgb(146, 75, 179);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+}
+
+.badge-item .dashicons-admin-plugins {
+    color: rgb(240, 103, 35);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(240, 103, 35);
+}
+
+.badge-item .dashicons-admin-settings {
+    color: rgb(233, 192, 45);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(233, 192, 45);
+}
+
+.badge-item .dashicons-admin-site {
+    color: rgb(115, 173, 48);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(115, 173, 48);
+}
+
+.badge-item .dashicons-admin-tools {
+    color: rgb(205, 0, 0);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(205, 0, 0);
+}
+
+.badge-item .dashicons-admin-users {
+    color: rgb(17, 121, 157);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+
+.badge-item .dashicons-admin-generic {
+    color: rgb(174, 173, 173);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(174, 173, 173);
 }
 
 .badge-name {
     font-size: 0.9em;
-    color: #444;
+    color: #23282d;
+    font-weight: 500;
 }
 
 @media (max-width: 600px) {
