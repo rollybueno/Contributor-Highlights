@@ -120,18 +120,12 @@
     display: flex;
     align-items: center;
     gap: 0.75em;
-    padding: 0.75em 1em;
+    padding: 0.5em 1em;
     background: #fff;
-    border: 1px solid #e5e5e5;
     border-radius: 3px;
-    transition: all 0.2s ease;
     position: relative;
-    padding-left: 48px;
-}
-
-.badge-item:hover {
-    background: #f9f9f9;
-    border-color: #ddd;
+    padding-left: 56px;
+    min-height: 40px;
 }
 
 .badge-item .dashicons {
@@ -142,8 +136,9 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 8px;
-    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12px;
     border: 2px solid white;
     border-radius: 50%;
     box-sizing: border-box;
@@ -329,6 +324,8 @@
     font-size: 0.9em;
     color: #23282d;
     font-weight: 500;
+    line-height: 1.2;
+    padding: 0.15em 0;
 }
 
 @media (max-width: 600px) {
