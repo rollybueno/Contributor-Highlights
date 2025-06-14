@@ -1,26 +1,20 @@
 <?php
 /**
- * The plugin bootstrap file
- *
- * @link              https://github.com/rollybueno
- * @since             1.0.0
- * @package           Contributor_Highlights
- *
- * @wordpress-plugin
  * Plugin Name:       Contributor Highlights
- * Plugin URI:        https://github.com/rollybueno/contributor-highlights
- * Description:       Display WordPress.org contributor profiles on your site.
+ * Plugin URI:        https://www.rollybueno.com/plugins/contributor-highlights/
+ * Description:       Showcase your WordPress.org contributions in style. This plugin pulls your public profile data—such as bio, contributions, and badges, and displays it beautifully on your site.
  * Version:           1.0.0
  * Author:            Rolly Bueno
- * Author URI:        https://github.com/rollybueno
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Author URI:        https://rollybueno.com
+ * Requires at least: 5.0
+ * Requires PHP:      7.4
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       contributor-highlights
- * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
-if (!defined('WPINC')) {
+if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -29,9 +23,9 @@ if (!defined('WPINC')) {
  *
  * @since 1.0.0
  */
-define('CH_VERSION', '1.0.0');
-define('CH_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('CH_PLUGIN_URL', plugin_dir_url(__FILE__));
+define( 'CH_VERSION', '1.0.0' );
+define( 'CH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * The code that runs during plugin activation.
@@ -49,8 +43,8 @@ function deactivate_contributor_highlights() {
 	Contributor_Highlights_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_contributor_highlights');
-register_deactivation_hook(__FILE__, 'deactivate_contributor_highlights');
+register_activation_hook( __FILE__, 'activate_contributor_highlights' );
+register_deactivation_hook( __FILE__, 'deactivate_contributor_highlights' );
 
 /**
  * The core plugin class that is used to define internationalization,
