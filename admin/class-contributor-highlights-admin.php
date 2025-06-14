@@ -2,6 +2,8 @@
 /**
  * The admin-specific functionality of the plugin.
  *
+ * Handles the admin-specific assets and functionality.
+ *
  * @since      1.0.0
  * @package    Contributor_Highlights
  * @subpackage Contributor_Highlights/admin

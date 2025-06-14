@@ -41,6 +41,9 @@ class Contributor_Highlights {
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * Sets up the plugin name, version, and loads all dependencies.
+	 * Also initializes the admin, public, and blocks functionality.
+	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {

@@ -2,9 +2,9 @@
 /**
  * The blocks-specific functionality of the plugin.
  *
- * @link       https://opensource-media-connect.com
- * @since      1.0.0
+ * Handles the registration and rendering of the Contributor Highlights block.
  *
+ * @since      1.0.0
  * @package    Contributor_Highlights
  * @subpackage Contributor_Highlights/includes
  */
@@ -12,6 +12,8 @@
 class Contributor_Highlights_Blocks {
 	/**
 	 * Initialize the class and set its properties.
+	 *
+	 * Registers the block and enqueues block editor assets.
 	 *
 	 * @since    1.0.0
 	 */
@@ -22,7 +24,9 @@ class Contributor_Highlights_Blocks {
 	}
 
 	/**
-	 * Register the block
+	 * Register the Contributor Highlights block.
+	 *
+	 * Registers the block type with WordPress and sets up its attributes and supports.
 	 *
 	 * @since    1.0.0
 	 */
@@ -76,7 +80,9 @@ class Contributor_Highlights_Blocks {
 	}
 
 	/**
-	 * Enqueue block editor assets
+	 * Enqueue block editor assets.
+	 *
+	 * Loads the necessary JavaScript and CSS files for the block editor.
 	 *
 	 * @since    1.0.0
 	 */
@@ -114,11 +120,13 @@ class Contributor_Highlights_Blocks {
 	}
 
 	/**
-	 * Render the block
+	 * Render the block content.
+	 *
+	 * Converts block attributes to shortcode attributes and renders the shortcode.
 	 *
 	 * @since    1.0.0
 	 * @param    array $attributes    The block attributes.
-	 * @return   string                  The rendered block.
+	 * @return   string               The rendered block content.
 	 */
 	public function render_block( $attributes ) {
 		$shortcode = '[contributor_profile';

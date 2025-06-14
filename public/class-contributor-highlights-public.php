@@ -2,6 +2,8 @@
 /**
  * The public-facing functionality of the plugin.
  *
+ * Handles the display of contributor profiles and manages public-facing assets.
+ *
  * @since      1.0.0
  * @package    Contributor_Highlights
  * @subpackage Contributor_Highlights/public
@@ -58,9 +60,11 @@ class Contributor_Highlights_Public {
 	/**
 	 * Display the contributor profile using a shortcode.
 	 *
+	 * Renders the contributor profile based on the provided shortcode attributes.
+	 *
 	 * @since    1.0.0
 	 * @param    array $atts    Shortcode attributes.
-	 * @return   string            The HTML output of the contributor profile.
+	 * @return   string         The HTML output of the contributor profile.
 	 */
 	public function display_contributor_profile( $atts ) {
 		$atts = shortcode_atts(
@@ -181,10 +185,12 @@ class Contributor_Highlights_Public {
 	/**
 	 * Fetch data from WordPress.org profile page.
 	 *
+	 * Retrieves and caches the HTML content of a WordPress.org profile page.
+	 *
 	 * @since    1.0.0
 	 * @access   private
 	 * @param    string $username    The WordPress.org username.
-	 * @return   string|WP_Error       The HTML content of the profile page or WP_Error on failure.
+	 * @return   string|WP_Error     The HTML content of the profile page or WP_Error on failure.
 	 */
 	private function get_wp_data( $username ) {
 		$transient_key = 'ch_wp_data_' . sanitize_title( $username );
@@ -207,7 +213,7 @@ class Contributor_Highlights_Public {
 				return $profile_data;
 			}
 
-			// Cache the data for 6 hour
+			// Cache the data for 6 hours
 			set_transient( $transient_key, $profile_data, 6 * HOUR_IN_SECONDS );
 		}
 		return $profile_data;
@@ -216,10 +222,12 @@ class Contributor_Highlights_Public {
 	/**
 	 * Get the parsed profile data for a WordPress.org user.
 	 *
+	 * Retrieves and caches the parsed profile data for a WordPress.org user.
+	 *
 	 * @since    1.0.0
 	 * @access   private
 	 * @param    string $username    The WordPress.org username.
-	 * @return   array                 The parsed profile data.
+	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
 		$transient_key = 'ch_profile_data_' . sanitize_title( $username );
@@ -237,10 +245,12 @@ class Contributor_Highlights_Public {
 	/**
 	 * Parse the HTML content from WordPress.org profile page.
 	 *
+	 * Extracts relevant information from the WordPress.org profile page HTML.
+	 *
 	 * @since    1.0.0
 	 * @access   private
 	 * @param    string $html    The HTML content to parse.
-	 * @return   array             The parsed profile data.
+	 * @return   array          The parsed profile data.
 	 */
 	private function parse_profile_html( $html ) {
 		// Create a DOMDocument object
