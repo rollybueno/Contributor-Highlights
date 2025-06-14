@@ -128,7 +128,7 @@ class Contributor_Highlights_Public {
 						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
 							<div class="badge-item">
 								<?php if ( ! empty( $badge['icon'] ) ) : ?>
-									<span class="dashicons <?php echo esc_attr( $badge['icon'] ); ?>"></span>
+									<span class="dashicons <?php echo implode( ' ', $badge['class'] ); ?>"></span>
 								<?php endif; ?>
 								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
 							</div>
@@ -260,6 +260,7 @@ class Contributor_Highlights_Public {
 		foreach ( $xpath->query( '//ul[@id="user-badges"]/li' ) as $li ) {
 			$badge_name = trim( $li->textContent );
 			$badge_icon = '';
+			$classes    = '';
 			$badge_div  = $xpath->query( './/div[contains(@class, "badge")]', $li )->item( 0 );
 			if ( $badge_div && $badge_div->hasAttributes() ) {
 				$classes = explode( ' ', $badge_div->getAttribute( 'class' ) );
@@ -271,8 +272,9 @@ class Contributor_Highlights_Public {
 				}
 			}
 			$profile_data['badges'][] = array(
-				'name' => $badge_name,
-				'icon' => $badge_icon,
+				'name'  => $badge_name,
+				'icon'  => $badge_icon,
+				'class' => $classes,
 			);
 		}
 

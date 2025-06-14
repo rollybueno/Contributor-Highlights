@@ -145,9 +145,15 @@
 }
 
 /* WordPress.org badge colors and borders */
-.badge-item .dashicons-universal-access {
+.badge-item .badge-accessibility-contributor {
     color: rgb(17, 121, 157);
     background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+
+.badge-item .badge-accessibility {
+    color: rgb(17, 121, 157);
+    background: rgba(17, 121, 157, 0.25);
     box-shadow: 0 0 0 4px rgb(17, 121, 157);
 }
 
@@ -318,6 +324,78 @@
     color: rgb(174, 173, 173);
     background: white;
     box-shadow: 0 0 0 4px rgb(174, 173, 173);
+}
+
+.badge-item .dashicons-buddicons-replies {
+    color: rgb(45, 142, 66);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(45, 142, 66);
+}
+
+.badge-item .dashicons-buddicons-replies {
+    color: rgb(45, 142, 66);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(45, 142, 66);
+}
+
+.badge-item .dashicons-groups {
+    color: rgb(17, 121, 157);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(17, 121, 157);
+}
+
+.badge-item .dashicons-art {
+    color: rgb(238, 194, 106);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(238, 194, 106);
+}
+
+.badge-item .dashicons-cloud {
+    color: rgb(83, 88, 166);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(83, 88, 166);
+}
+
+.badge-item .dashicons-megaphone {
+    color: rgb(247, 173, 67);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-item .dashicons-location {
+    color: rgb(247, 173, 67);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-item .dashicons-testimonial {
+    color: rgb(0, 128, 128);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(0, 128, 128);
+}
+
+.badge-item .dashicons-format-status {
+    color: rgb(71, 190, 167);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(71, 190, 167);
+}
+
+.badge-item .dashicons-nametag {
+    color: rgb(247, 173, 67);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(247, 173, 67);
+}
+
+.badge-item .dashicons-welcome-view-site {
+    color: rgb(0, 128, 128);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(0, 128, 128);
+}
+
+.badge-item .dashicons-arrow-right-alt2 {
+    color: rgb(66, 66, 66);
+    background: white;
+    box-shadow: 0 0 0 4px rgb(66, 66, 66);
 }
 
 .badge-name {
