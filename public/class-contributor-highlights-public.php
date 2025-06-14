@@ -1,22 +1,67 @@
 <?php
-
+/**
+ * The public-facing functionality of the plugin.
+ *
+ * @since      1.0.0
+ * @package    Contributor_Highlights
+ * @subpackage Contributor_Highlights/public
+ */
 class Contributor_Highlights_Public {
+	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $plugin_name    The ID of this plugin.
+	 */
 	private $plugin_name;
+
+	/**
+	 * The version of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
 	private $version;
 
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    1.0.0
+	 * @param    string $plugin_name       The name of the plugin.
+	 * @param    string $version           The version of this plugin.
+	 */
 	public function __construct( $plugin_name, $version ) {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 	}
 
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
 	public function enqueue_styles() {
 		wp_enqueue_style( $this->plugin_name, CH_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array(), $this->version, 'all' );
 	}
 
+	/**
+	 * Register the JavaScript for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( $this->plugin_name, CH_PLUGIN_URL . 'public/js/contributor-highlights-public.js', array( 'jquery' ), $this->version, false );
 	}
 
+	/**
+	 * Display the contributor profile using a shortcode.
+	 *
+	 * @since    1.0.0
+	 * @param    array $atts    Shortcode attributes.
+	 * @return   string            The HTML output of the contributor profile.
+	 */
 	public function display_contributor_profile( $atts ) {
 		$atts = shortcode_atts(
 			array(
@@ -47,7 +92,7 @@ class Contributor_Highlights_Public {
 			<div class="contributor-header">
 				<?php if ( $atts['show_avatar'] === 'yes' && ! empty( $profile_data['avatar'] ) ) : ?>
 					<div class="contributor-avatar">
-						<img src="<?php echo esc_url( str_replace('s=100', 's=150', $profile_data['avatar']) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+						<img src="<?php echo esc_url( str_replace( 's=100', 's=150', $profile_data['avatar'] ) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
 					</div>
 				<?php endif; ?>
 
@@ -133,6 +178,14 @@ class Contributor_Highlights_Public {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Fetch data from WordPress.org profile page.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @param    string $username    The WordPress.org username.
+	 * @return   string|WP_Error       The HTML content of the profile page or WP_Error on failure.
+	 */
 	private function get_wp_data( $username ) {
 		$transient_key = 'ch_wp_data_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
@@ -162,6 +215,14 @@ class Contributor_Highlights_Public {
 		return $profile_data;
 	}
 
+	/**
+	 * Get the parsed profile data for a WordPress.org user.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @param    string $username    The WordPress.org username.
+	 * @return   array                 The parsed profile data.
+	 */
 	private function get_profile_data( $username ) {
 		$transient_key = 'ch_profile_data_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
@@ -175,6 +236,14 @@ class Contributor_Highlights_Public {
 		return $profile_data;
 	}
 
+	/**
+	 * Parse the HTML content from WordPress.org profile page.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @param    string $html    The HTML content to parse.
+	 * @return   array             The parsed profile data.
+	 */
 	private function parse_profile_html( $html ) {
 		// Create a DOMDocument object
 		$dom = new DOMDocument();

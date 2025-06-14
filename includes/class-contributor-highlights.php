@@ -1,10 +1,48 @@
 <?php
-
+/**
+ * The core plugin class.
+ *
+ * This is used to define internationalization, admin-specific hooks, and
+ * public-facing site hooks.
+ *
+ * @since      1.0.0
+ * @package    Contributor_Highlights
+ * @subpackage Contributor_Highlights/includes
+ */
 class Contributor_Highlights {
+	/**
+	 * The loader that's responsible for maintaining and registering all hooks that power
+	 * the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      Contributor_Highlights_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 */
 	protected $loader;
+
+	/**
+	 * The unique identifier of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 */
 	protected $plugin_name;
+
+	/**
+	 * The current version of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $version    The current version of the plugin.
+	 */
 	protected $version;
 
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    1.0.0
+	 */
 	public function __construct() {
 		$this->version     = CH_VERSION;
 		$this->plugin_name = 'contributor-highlights';
@@ -14,6 +52,18 @@ class Contributor_Highlights {
 		$this->define_public_hooks();
 	}
 
+	/**
+	 * Load the required dependencies for this plugin.
+	 *
+	 * Include the following files that make up the plugin:
+	 *
+	 * - Contributor_Highlights_Loader. Orchestrates the hooks of the plugin.
+	 * - Contributor_Highlights_Admin. Defines all hooks for the admin area.
+	 * - Contributor_Highlights_Public. Defines all hooks for the public side of the site.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
 	private function load_dependencies() {
 		require_once CH_PLUGIN_DIR . 'includes/class-contributor-highlights-loader.php';
 		require_once CH_PLUGIN_DIR . 'admin/class-contributor-highlights-admin.php';
@@ -22,6 +72,13 @@ class Contributor_Highlights {
 		$this->loader = new Contributor_Highlights_Loader();
 	}
 
+	/**
+	 * Register all of the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
 	private function define_admin_hooks() {
 		$plugin_admin = new Contributor_Highlights_Admin( $this->get_plugin_name(), $this->get_version() );
 
@@ -30,6 +87,13 @@ class Contributor_Highlights {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
 	}
 
+	/**
+	 * Register all of the hooks related to the public-facing functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
 	private function define_public_hooks() {
 		$plugin_public = new Contributor_Highlights_Public( $this->get_plugin_name(), $this->get_version() );
 
@@ -38,14 +102,32 @@ class Contributor_Highlights {
 		$this->loader->add_shortcode( 'contributor_profile', $plugin_public, 'display_contributor_profile' );
 	}
 
+	/**
+	 * Run the loader to execute all of the hooks with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
 	public function run() {
 		$this->loader->run();
 	}
 
+	/**
+	 * The name of the plugin used to uniquely identify it within the context of
+	 * WordPress and to define internationalization functionality.
+	 *
+	 * @since     1.0.0
+	 * @return    string    The name of the plugin.
+	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;
 	}
 
+	/**
+	 * The reference to the class that orchestrates the hooks with the plugin.
+	 *
+	 * @since     1.0.0
+	 * @return    Contributor_Highlights_Loader    Orchestrates the hooks of the plugin.
+	 */
 	public function get_version() {
 		return $this->version;
 	}

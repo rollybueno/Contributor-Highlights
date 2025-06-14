@@ -17,7 +17,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-// Define plugin constants
+/**
+ * Define plugin constants
+ *
+ * @since 1.0.0
+ */
 define( 'CH_VERSION', '1.0.0' );
 define( 'CH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -25,7 +29,14 @@ define( 'CH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 // Include required files
 require_once CH_PLUGIN_DIR . 'includes/class-contributor-highlights.php';
 
-// Initialize the plugin
+/**
+ * Initialize the plugin
+ *
+ * Creates an instance of the main plugin class and runs it.
+ *
+ * @since 1.0.0
+ * @return void
+ */
 function run_contributor_highlights() {
 	$plugin = new Contributor_Highlights();
 	$plugin->run();
