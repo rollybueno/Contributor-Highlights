@@ -47,19 +47,12 @@ class Contributor_Highlights_Public {
 			<div class="contributor-header">
 				<?php if ( $atts['show_avatar'] === 'yes' && ! empty( $profile_data['avatar'] ) ) : ?>
 					<div class="contributor-avatar">
-						<img src="<?php echo esc_url( $profile_data['avatar'] ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+						<img src="<?php echo esc_url( str_replace('s=100', 's=150', $profile_data['avatar']) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
 					</div>
 				<?php endif; ?>
 
 				<div class="contributor-info">
 					<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
-					
-					<?php if ( ! empty( $profile_data['slack'] ) ) : ?>
-						<div class="contributor-slack">
-							<span class="dashicons dashicons-slack"></span>
-							<?php echo esc_html( $profile_data['slack'] ); ?>
-						</div>
-					<?php endif; ?>
 
 					<?php if ( $atts['show_meta'] === 'yes' && ! empty( $profile_data['user_meta'] ) ) : ?>
 						<div class="contributor-meta">
@@ -116,6 +109,7 @@ class Contributor_Highlights_Public {
 			<?php endif; ?>
 
 			<?php if ( $atts['show_contributions'] === 'yes' && ! empty( $profile_data['contributions'] ) ) : ?>
+				<h3><?php _e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
 					<?php echo wp_kses_post( $profile_data['contributions'] ); ?>
 				</div>
@@ -224,7 +218,7 @@ class Contributor_Highlights_Public {
 		// Get bio
 		$bio_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-about"]/p' );
 		if ( $bio_nodes->length > 0 ) {
-			$profile_data['bio'] = trim( $bio_nodes->item( 0 )->textContent );
+			$profile_data['bio'] = trim( $dom->saveHTML( $bio_nodes->item( 0 ) ) );
 		}
 
 		// Get contributions
