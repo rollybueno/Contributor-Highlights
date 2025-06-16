@@ -124,7 +124,7 @@ This update adds a new compact version feature and improves the block editor int
 
 ## Credits
 
-Developed by [Your Name/Organization]
+Developed by https://profiles.wordpress.org/rollybueno
 
 ## License
 
