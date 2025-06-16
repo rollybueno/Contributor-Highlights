@@ -291,31 +291,25 @@ class Contributor_Highlights_Public {
 		// Get name
 		$name_nodes = $xpath->query( '//header[contains(@class, "site-header")]//h2/a' );
 		if ( $name_nodes->length > 0 ) {
-			$profile_data['name'] = trim( $name_nodes->item( 0 )->textContent );
-		}
-
-		// Get avatar
-		$avatar_nodes = $xpath->query( '//header[contains(@class, "site-header")]//img[contains(@class, "avatar")]' );
-		if ( $avatar_nodes->length > 0 ) {
-			$profile_data['avatar'] = $avatar_nodes->item( 0 )->getAttribute( 'src' );
+			$profile_data['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
 		}
 
 		// Get Slack
 		$slack_node = $xpath->query( '//p[@id="slack-username"]//span[contains(@class, "username")]' );
 		if ( $slack_node->length > 0 ) {
-			$profile_data['slack'] = trim( $slack_node->item( 0 )->textContent );
+			$profile_data['slack'] = esc_html( trim( $slack_node->item( 0 )->textContent ) );
 		}
 
 		// Get bio
 		$bio_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-about"]/p' );
 		if ( $bio_nodes->length > 0 ) {
-			$profile_data['bio'] = trim( $dom->saveHTML( $bio_nodes->item( 0 ) ) );
+			$profile_data['bio'] = wp_kses_post( trim( $dom->saveHTML( $bio_nodes->item( 0 ) ) ) );
 		}
 
 		// Get contributions
 		$contribution_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
 		if ( $contribution_nodes->length > 0 ) {
-			$profile_data['contributions'] = trim( $dom->saveHTML( $contribution_nodes->item( 0 ) ) );
+			$profile_data['contributions'] = wp_kses_post( trim( $dom->saveHTML( $contribution_nodes->item( 0 ) ) ) );
 		}
 
 		// Get user meta
@@ -330,11 +324,11 @@ class Contributor_Highlights_Public {
 
 				if ( $aTag ) {
 					$profile_data['user_meta'][ $key ] = array(
-						'text' => trim( $aTag->textContent ),
-						'url'  => trim( $aTag->getAttribute( 'href' ) ),
+						'text' => esc_html( trim( $aTag->textContent ) ),
+						'url'  => esc_url( trim( $aTag->getAttribute( 'href' ) ) ),
 					);
 				} else {
-					$profile_data['user_meta'][ $key ] = $strong ? trim( $strong->textContent ) : '';
+					$profile_data['user_meta'][ $key ] = $strong ? esc_html( trim( $strong->textContent ) ) : '';
 				}
 			}
 		}
@@ -355,9 +349,9 @@ class Contributor_Highlights_Public {
 				}
 			}
 			$profile_data['badges'][] = array(
-				'name'  => $badge_name,
-				'icon'  => $badge_icon,
-				'class' => $classes,
+				'name'  => esc_html( $badge_name ),
+				'icon'  => esc_html( $badge_icon ),
+				'class' => array_map( 'esc_html', $classes ),
 			);
 		}
 
@@ -365,14 +359,14 @@ class Contributor_Highlights_Public {
 		if ( empty( $profile_data['name'] ) ) {
 			$name_nodes = $xpath->query( '//h1[contains(@class, "profile-name")]' );
 			if ( $name_nodes->length > 0 ) {
-				$profile_data['name'] = trim( $name_nodes->item( 0 )->textContent );
+				$profile_data['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
 			}
 		}
 
 		if ( empty( $profile_data['avatar'] ) ) {
 			$avatar_nodes = $xpath->query( '//img[contains(@class, "avatar")]' );
 			if ( $avatar_nodes->length > 0 ) {
-				$profile_data['avatar'] = $avatar_nodes->item( 0 )->getAttribute( 'src' );
+				$profile_data['avatar'] = esc_url( $avatar_nodes->item( 0 )->getAttribute( 'src' ) );
 			}
 		}
 
