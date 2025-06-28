@@ -47,7 +47,7 @@ class Contributor_Highlights {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		$this->version     = CH_VERSION;
+		$this->version     = CONTHI_VERSION;
 		$this->plugin_name = 'contributor-highlights';
 
 		$this->load_dependencies();

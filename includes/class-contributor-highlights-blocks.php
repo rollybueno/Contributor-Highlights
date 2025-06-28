@@ -91,7 +91,7 @@ class Contributor_Highlights_Blocks {
 	 * @since    1.0.0
 	 */
 	public function enqueue_block_editor_assets() {
-		$asset_file = CH_PLUGIN_DIR . 'build/index.asset.php';
+		$asset_file = CONTHI_PLUGIN_DIR . 'build/index.asset.php';
 
 		if ( ! file_exists( $asset_file ) ) {
 			return;

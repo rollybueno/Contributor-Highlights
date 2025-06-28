@@ -45,7 +45,7 @@ class Contributor_Highlights_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, CH_PLUGIN_URL . 'admin/css/contributor-highlights-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, CONTHI_PLUGIN_URL . 'admin/css/contributor-highlights-admin.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -54,6 +54,6 @@ class Contributor_Highlights_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, CH_PLUGIN_URL . 'admin/js/contributor-highlights-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, CONTHI_PLUGIN_URL . 'admin/js/contributor-highlights-admin.js', array( 'jquery' ), $this->version, false );
 	}
 }

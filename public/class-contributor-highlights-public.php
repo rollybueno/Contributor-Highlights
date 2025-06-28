@@ -45,7 +45,7 @@ class Contributor_Highlights_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, CH_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Contributor_Highlights_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, CH_PLUGIN_URL . 'public/js/contributor-highlights-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/js/contributor-highlights-public.js', array( 'jquery' ), $this->version, false );
 	}
 
 	/**
@@ -207,7 +207,7 @@ class Contributor_Highlights_Public {
 	 * @return   string|WP_Error     The HTML content of the profile page or WP_Error on failure.
 	 */
 	private function get_wp_data( $username ) {
-		$transient_key = 'ch_wp_data_' . sanitize_title( $username );
+		$transient_key = 'conthi_wp_data_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -244,7 +244,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'ch_profile_data_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
