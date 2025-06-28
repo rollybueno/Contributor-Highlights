@@ -21,14 +21,14 @@ class Contributor_Highlights_Activator {
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
-				$wpdb->esc_like( '_transient_ch_' ) . '%'
+				$wpdb->esc_like( '_transient_conthi_' ) . '%'
 			)
 		);
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
-				$wpdb->esc_like( '_transient_timeout_ch_' ) . '%'
+				$wpdb->esc_like( '_transient_timeout_conthi_' ) . '%'
 			)
 		);
 	}

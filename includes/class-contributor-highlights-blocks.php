@@ -101,7 +101,7 @@ class Contributor_Highlights_Blocks {
 
 		wp_enqueue_script(
 			'contributor-highlights-editor',
-			CH_PLUGIN_URL . 'build/index.js',
+			CONTHI_PLUGIN_URL . 'build/index.js',
 			$asset['dependencies'],
 			$asset['version'],
 			true
@@ -110,7 +110,7 @@ class Contributor_Highlights_Blocks {
 		// Enqueue block editor styles
 		wp_enqueue_style(
 			'contributor-highlights-editor',
-			CH_PLUGIN_URL . 'build/index.css',
+			CONTHI_PLUGIN_URL . 'build/index.css',
 			array(),
 			$asset['version']
 		);
@@ -118,9 +118,9 @@ class Contributor_Highlights_Blocks {
 		// Enqueue frontend styles in editor
 		wp_enqueue_style(
 			'contributor-highlights-public',
-			CH_PLUGIN_URL . 'public/css/contributor-highlights-public.css',
+			CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css',
 			array(),
-			CH_VERSION
+			CONTHI_VERSION
 		);
 	}
 
