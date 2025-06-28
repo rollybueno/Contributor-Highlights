@@ -67,37 +67,45 @@ registerBlockType('contributor-highlights/profile', {
                             value={username}
                             onChange={(value) => setAttributes({ username: value })}
                             help={__('Enter the WordPress.org username to display', 'contributor-highlights')}
+                            __next40pxDefaultSize={true}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Compact Version', 'contributor-highlights')}
                             checked={compactVersion}
                             onChange={() => setAttributes({ compactVersion: !compactVersion })}
                             help={__('Show a compact version of the card, with only meta information and badges without any heading. Overrides other settings.', 'contributor-highlights')}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Show Avatar', 'contributor-highlights')}
                             checked={showAvatar}
                             onChange={() => setAttributes({ showAvatar: !showAvatar })}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Show Meta', 'contributor-highlights')}
                             checked={showMeta}
                             onChange={() => setAttributes({ showMeta: !showMeta })}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Show Bio', 'contributor-highlights')}
                             checked={showBio}
                             onChange={() => setAttributes({ showBio: !showBio })}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Show Contributions', 'contributor-highlights')}
                             checked={showContributions}
                             onChange={() => setAttributes({ showContributions: !showContributions })}
+                            __nextHasNoMarginBottom={true}
                         />
                         <ToggleControl
                             label={__('Show Badges', 'contributor-highlights')}
                             checked={showBadges}
                             onChange={() => setAttributes({ showBadges: !showBadges })}
+                            __nextHasNoMarginBottom={true}
                         />
                     </PanelBody>
                 </InspectorControls>

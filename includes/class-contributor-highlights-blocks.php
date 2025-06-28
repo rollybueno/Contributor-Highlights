@@ -39,7 +39,7 @@ class Contributor_Highlights_Blocks {
 			'contributor-highlights/profile',
 			array(
 				'editor_script'   => 'contributor-highlights-editor',
-				'editor_style'    => 'contributor-highlights-editor',
+				'style'           => 'contributor-highlights-public',
 				'render_callback' => array( $this, 'render_block' ),
 				'supports'        => array(
 					'align' => array( 'wide', 'full' ),
@@ -107,12 +107,11 @@ class Contributor_Highlights_Blocks {
 			true
 		);
 
-		// Enqueue block editor styles
-		wp_enqueue_style(
-			'contributor-highlights-editor',
-			CONTHI_PLUGIN_URL . 'build/index.css',
-			array(),
-			$asset['version']
+		wp_register_style(
+			'contributor-highlights-public',
+			CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css',
+			array( 'dashicons' ),
+			CONTHI_VERSION
 		);
 
 		// Enqueue frontend styles in editor
