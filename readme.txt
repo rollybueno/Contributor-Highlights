@@ -28,30 +28,21 @@ This plugin does not require any API keys or manual data entry — just input a 
 
 Whether you're celebrating your own WordPress journey or recognizing others, Contributor Highlights makes it easy to bring open-source contributions front and center.
 
-== Privacy & Data Collection ==
-
-This plugin does not collect or store any personal data from your website visitors. However, it does:
-
-* Cache WordPress.org profile data temporarily (for 6 hours) to improve performance
-* Store this cached data in your WordPress database using WordPress transients
-* Automatically clear cached data when the plugin is deactivated
-
 == External Services ==
 
 The plugin interacts with the following external services:
 
 * **WordPress.org Profiles**
-  * Used to fetch contributor profile data
-  * Data is fetched from public profile pages
-  * No authentication required
-  * Data is publicly available
+  * **Purpose**: To fetch and display contributor profile data within the plugin interface.
+  * **What is fetched?**: Publicly available data such as display name, avatar, badges, and contribution activity.
+  * **Authentication**: No authentication or login is required.
+  * **Privacy Impact**: The plugin only reads data that is already publicly accessible on profiles.wordpress.org. It does not store, share, or transmit this data beyond displaying it to site users.
 
-== Privacy Policy ==
+For more information, see [WordPress.org Privacy Policy](https://wordpress.org/about/privacy/).
 
-This plugin does not collect any personal data from your website visitors. It only temporarily caches publicly available data from WordPress.org profiles to improve performance. All cached data is automatically cleared when the plugin is deactivated.
+== Privacy & Data Collection ==
 
-The plugin uses WordPress.org Profiles to fetch contributor data, including avatars. All data is publicly available and accessed without authentication.
-
+This plugin does not collect or store any personal data from your website visitors. It fetches publicly available contributor information from WordPress.org Profiles (including avatars) without requiring authentication. To improve performance, the data is temporarily cached and automatically cleared upon deactivation.
 == Installation ==
 
 1. Upload the `contributor-highlights` folder to the `/wp-content/plugins/` directory
@@ -79,9 +70,9 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 == Screenshots ==
 
 1. Contributor Highlights block in the editor, displaying a profile with block settings visible in the sidebar.
-2. The block inserter in the WordPress editor, demonstrating how to find the Contributor Highlights block by typing “/Contributor” in a post or page.
+2. The block inserter in the WordPress editor, demonstrating how to find the Contributor Highlights block by typing "/Contributor" in a post or page.
 3. Block settings panel showing options to configure the Contributor Highlights block, including WordPress.org username and display preferences.
-4. Front-end view of a Contributor Highlights card on a live page, showing contributor avatar, name, bio, contribution badges, and meta information styled within the site’s theme.
+4. Front-end view of a Contributor Highlights card on a live page, showing contributor avatar, name, bio, contribution badges, and meta information styled within the site's theme.
 5. Compact version, omitting bio, contributions and badge heading
 
 == Changelog ==
