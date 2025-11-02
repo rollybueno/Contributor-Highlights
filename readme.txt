@@ -3,7 +3,7 @@ Contributors: rollybueno
 Tags: contributor, profile, wordpress.org, badges, block
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -43,6 +43,7 @@ For more information, see [WordPress.org Privacy Policy](https://wordpress.org/a
 == Privacy & Data Collection ==
 
 This plugin does not collect or store any personal data from your website visitors. It fetches publicly available contributor information from WordPress.org Profiles (including avatars) without requiring authentication. To improve performance, the data is temporarily cached and automatically cleared upon deactivation.
+
 == Installation ==
 
 1. Upload the `contributor-highlights` folder to the `/wp-content/plugins/` directory
@@ -76,6 +77,11 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 5. Compact version, omitting bio, contributions and badge heading
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Core AI, Playground and Credits Mentor badges
+* Fix: Broken dependencies that block the icons from rendering
+* Fix: Container alignment on column usage
 
 = 1.0.0 =
 * Initial release
