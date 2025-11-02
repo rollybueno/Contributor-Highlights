@@ -1,4 +1,6 @@
 .contributor-profile {
+    container-type: inline-size; /* Enables container queries */
+    container-name: contributor-profile;
     max-width: 800px;
     margin: 2em auto;
     padding: 2em;
@@ -624,6 +626,24 @@
     font-weight: 500;
     line-height: 1.2;
     padding: 0.15em 0;
+}
+
+.sidebar-column {
+    container-type: inline-size;
+}
+  
+.sidebar-homepage .contributor-header{
+    flex-direction: column;
+    text-align: center;
+}
+  
+@container (max-width: 600px) {
+    .contributor-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
 }
 
 @media (max-width: 600px) {
