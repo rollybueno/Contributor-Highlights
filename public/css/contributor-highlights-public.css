@@ -1,4 +1,6 @@
 .contributor-profile {
+    container-type: inline-size; /* Enables container queries */
+    container-name: contributor-profile;
     max-width: 800px;
     margin: 2em auto;
     padding: 2em;
@@ -145,6 +147,22 @@
 }
 
 /* WordPress.org badge colors and borders */
+.badge-core-ai-contributor {
+    box-shadow: 0 0 0 4px rgb(122, 0, 223);
+    background: url("../images/core-ai-contributor.svg") no-repeat center/75%;
+}
+.badge-core-ai-contributor:before {
+    color: rgb(122, 0, 223);
+}
+
+.badge-credits-mentor {
+    box-shadow: 0 0 0 4px rgb(174, 71, 242);
+    background: url("../images/credits-mentor.svg") no-repeat center/75%;
+}
+.badge-credits-mentor:before {
+    color: rgb(174, 71, 242);
+}
+
 .badge-unknown {
     background: white;
     box-shadow: 0 0 0 4px rgb(199, 199, 199);
@@ -430,6 +448,14 @@
     color: rgb(83, 88, 166);
 }
 
+.badge-playground-contributor {
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+    background: url("../images/playground-contributor.svg") no-repeat center/75%;
+}
+.badge-playground-contributor:before {
+    color: rgb(146, 75, 179);
+}
+
 .badge-tide {
     background: rgba(21, 38, 255, 0.25);
     box-shadow: 0 0 0 4px rgb(21, 38, 255);
@@ -600,6 +626,24 @@
     font-weight: 500;
     line-height: 1.2;
     padding: 0.15em 0;
+}
+
+.sidebar-column {
+    container-type: inline-size;
+}
+  
+.sidebar-homepage .contributor-header{
+    flex-direction: column;
+    text-align: center;
+}
+  
+@container (max-width: 600px) {
+    .contributor-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
 }
 
 @media (max-width: 600px) {

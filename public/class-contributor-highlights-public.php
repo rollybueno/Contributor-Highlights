@@ -45,7 +45,7 @@ class Contributor_Highlights_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array('dashicons'), $this->version, 'all' );
 	}
 
 	/**
