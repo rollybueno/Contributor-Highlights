@@ -145,6 +145,22 @@
 }
 
 /* WordPress.org badge colors and borders */
+.badge-core-ai-contributor {
+    box-shadow: 0 0 0 4px rgb(122, 0, 223);
+    background: url("../images/core-ai-contributor.svg") no-repeat center/75%;
+}
+.badge-core-ai-contributor:before {
+    color: rgb(122, 0, 223);
+}
+
+.badge-credits-mentor {
+    box-shadow: 0 0 0 4px rgb(174, 71, 242);
+    background: url("../images/credits-mentor.svg") no-repeat center/75%;
+}
+.badge-credits-mentor:before {
+    color: rgb(174, 71, 242);
+}
+
 .badge-unknown {
     background: white;
     box-shadow: 0 0 0 4px rgb(199, 199, 199);
@@ -428,6 +444,14 @@
 }
 .badge-hosting-contributor:before {
     color: rgb(83, 88, 166);
+}
+
+.badge-playground-contributor {
+    box-shadow: 0 0 0 4px rgb(146, 75, 179);
+    background: url("../images/playground-contributor.svg") no-repeat center/75%;
+}
+.badge-playground-contributor:before {
+    color: rgb(146, 75, 179);
 }
 
 .badge-tide {
