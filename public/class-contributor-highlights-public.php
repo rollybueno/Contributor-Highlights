@@ -278,10 +278,38 @@ class Contributor_Highlights_Public {
 				</section>
 			<?php endif; ?>
 
-			<?php if ( $atts['show_bio'] && ! empty( $profile_data['bio'] ) ) : ?>
-				<div class="contributor-bio">
-					<?php echo wp_kses_post( $profile_data['bio'] ); ?>
-				</div>	
+			<?php
+			$bio_display = $this->prepare_bio_display( $profile_data['bio'] );
+			if ( $atts['show_bio'] && ( ! empty( $bio_display['preview'] ) || ! empty( $bio_display['full_html'] ) ) ) :
+				?>
+				<section class="contributor-bio">
+					<?php if ( ! $atts['compact_version'] ) : ?>
+						<h3 class="contributor-bio-title"><?php esc_html_e( 'Bio', 'contributor-highlights' ); ?></h3>
+					<?php endif; ?>
+					<div class="contributor-bio-content">
+						<?php if ( ! empty( $bio_display['is_collapsible'] ) ) : ?>
+							<div class="contributor-bio-preview">
+								<p><?php echo esc_html( $bio_display['preview'] ); ?></p>
+							</div>
+							<div class="contributor-bio-full" hidden>
+								<?php echo wp_kses_post( $bio_display['full_html'] ); ?>
+							</div>
+						<?php else : ?>
+							<?php echo wp_kses_post( $bio_display['full_html'] ); ?>
+						<?php endif; ?>
+					</div>
+					<?php if ( ! empty( $bio_display['is_collapsible'] ) ) : ?>
+						<button
+							type="button"
+							class="contributor-bio-toggle"
+							aria-expanded="false"
+							data-read-more="<?php esc_attr_e( 'Read more', 'contributor-highlights' ); ?>"
+							data-read-less="<?php esc_attr_e( 'Read less', 'contributor-highlights' ); ?>"
+						>
+							<?php esc_html_e( 'Read more', 'contributor-highlights' ); ?>
+						</button>
+					<?php endif; ?>
+				</section>
 			<?php endif; ?>
 
 			<?php if ( $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
@@ -359,7 +387,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v4_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v6_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -418,7 +446,9 @@ class Contributor_Highlights_Public {
 				'is_present'  => false,
 				'dates'       => '',
 			),
-			'bio'           => '',
+			'bio'           => array(
+				'content' => '',
+			),
 			'slack'         => '',
 			'contributions' => '',
 			'badges'        => array(),
@@ -439,11 +469,7 @@ class Contributor_Highlights_Public {
 			$profile_data['slack'] = esc_html( trim( $slack_node->item( 0 )->textContent ) );
 		}
 
-		// Get bio
-		$bio_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-about"]/p' );
-		if ( $bio_nodes->length > 0 ) {
-			$profile_data['bio'] = wp_kses_post( trim( $dom->saveHTML( $bio_nodes->item( 0 ) ) ) );
-		}
+		$profile_data['bio'] = $this->parse_bio( $xpath, $dom );
 
 		// Get contributions
 		$contribution_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
@@ -495,6 +521,100 @@ class Contributor_Highlights_Public {
 		}
 
 		return $profile_data;
+	}
+
+	/**
+	 * Parse bio content from the WordPress.org profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath    $xpath XPath instance for the profile document.
+	 * @param    DOMDocument $dom   Parsed profile document.
+	 * @return   array               Parsed bio fields.
+	 */
+	private function parse_bio( $xpath, $dom ) {
+		$bio = array(
+			'content' => '',
+		);
+
+		$about_nodes = $xpath->query( '//div[@id="content-about"]//div[contains(@class, "item-meta-about")]' );
+		if ( 0 === $about_nodes->length ) {
+			return $bio;
+		}
+
+		$paragraph_nodes = $xpath->query( './/p', $about_nodes->item( 0 ) );
+		if ( $paragraph_nodes->length > 0 ) {
+			$paragraphs = array();
+
+			foreach ( $paragraph_nodes as $paragraph_node ) {
+				$paragraphs[] = wp_kses_post( trim( $dom->saveHTML( $paragraph_node ) ) );
+			}
+
+			$bio['content'] = implode( '', $paragraphs );
+		}
+
+		return $bio;
+	}
+
+	/**
+	 * Prepare bio text for display with optional word-based truncation.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $bio         Parsed bio data.
+	 * @param    int   $word_limit  Word limit before truncation.
+	 * @return   array             Display-ready bio data.
+	 */
+	private function prepare_bio_display( $bio, $word_limit = 300 ) {
+		$display = array(
+			'preview'        => '',
+			'full_html'      => '',
+			'is_collapsible' => false,
+		);
+
+		if ( empty( $bio['content'] ) ) {
+			return $display;
+		}
+
+		$plain_text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $bio['content'] ) ) );
+		if ( '' === $plain_text ) {
+			return $display;
+		}
+
+		$display['full_html'] = $bio['content'];
+		$truncated            = $this->truncate_words( $plain_text, $word_limit );
+
+		if ( $truncated['is_truncated'] ) {
+			$display['preview']        = $truncated['text'];
+			$display['is_collapsible'] = true;
+		}
+
+		return $display;
+	}
+
+	/**
+	 * Truncate plain text to a maximum number of words.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $text        Plain text to truncate.
+	 * @param    int    $word_limit  Maximum number of words.
+	 * @return   array               Truncated text and truncation state.
+	 */
+	private function truncate_words( $text, $word_limit = 300 ) {
+		$words = preg_split( '/\s+/u', trim( $text ), -1, PREG_SPLIT_NO_EMPTY );
+
+		if ( count( $words ) <= $word_limit ) {
+			return array(
+				'text'         => $text,
+				'is_truncated' => false,
+			);
+		}
+
+		return array(
+			'text'         => implode( ' ', array_slice( $words, 0, $word_limit ) ) . '…',
+			'is_truncated' => true,
+		);
 	}
 
 	/**
