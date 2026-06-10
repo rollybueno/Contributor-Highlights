@@ -221,10 +221,18 @@ class Contributor_Highlights_Public {
 					<?php endif; ?>
 
 					<?php if ( $atts['show_meta'] && ! empty( $header['teams'] ) ) : ?>
-						<div class="contributor-chip-row">
+						<div class="contributor-chip-row contributor-chip-row--teams">
 							<span class="contributor-chip-label"><?php esc_html_e( 'Teams', 'contributor-highlights' ); ?></span>
 							<?php foreach ( $header['teams'] as $team ) : ?>
-								<span class="contributor-chip"><?php echo esc_html( $team ); ?></span>
+								<?php
+								$team_chip_slug = $this->get_team_chip_slug( $team );
+								$chip_classes   = 'contributor-chip';
+
+								if ( $team_chip_slug ) {
+									$chip_classes .= ' contributor-chip--' . esc_attr( $team_chip_slug );
+								}
+								?>
+								<span class="<?php echo esc_attr( $chip_classes ); ?>"><?php echo esc_html( $team ); ?></span>
 							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>
@@ -1520,6 +1528,66 @@ class Contributor_Highlights_Public {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Map a profile team label to a chip color slug used in CSS.
+	 *
+	 * Slugs align with WordPress.org contributor badge colors.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $team_name Team label from the profile header.
+	 * @return   string            Sanitized slug, or empty when unknown.
+	 */
+	private function get_team_chip_slug( $team_name ) {
+		static $team_slug_map = null;
+
+		if ( null === $team_slug_map ) {
+			$team_slug_map = array(
+				'accessibility'   => 'accessibility',
+				'bbpress'         => 'bbpress',
+				'buddypress'      => 'buddypress',
+				'community'       => 'community',
+				'core'            => 'core',
+				'core ai'         => 'core-ai',
+				'design'          => 'design',
+				'documentation'   => 'documentation',
+				'docs'            => 'documentation',
+				'forums'          => 'support',
+				'hosting'         => 'hosting',
+				'marketing'       => 'marketing',
+				'media corps'     => 'media-corps',
+				'meta'            => 'meta',
+				'mobile'          => 'mobile',
+				'openverse'       => 'openverse',
+				'patterns'        => 'patterns',
+				'performance'     => 'performance',
+				'photos'          => 'photos',
+				'playground'      => 'playground',
+				'plugins'         => 'plugins',
+				'polyglots'       => 'polyglots',
+				'security'        => 'security',
+				'support'         => 'support',
+				'sustainability'  => 'sustainability',
+				'test'            => 'test',
+				'themes'          => 'themes',
+				'tide'            => 'tide',
+				'training'        => 'training',
+				'translation'     => 'polyglots',
+				'tv'              => 'wordpress-tv',
+				'wordpress tv'    => 'wordpress-tv',
+				'wp-cli'          => 'wp-cli',
+			);
+		}
+
+		$key = strtolower( trim( wp_strip_all_tags( $team_name ) ) );
+
+		if ( isset( $team_slug_map[ $key ] ) ) {
+			return sanitize_html_class( $team_slug_map[ $key ] );
+		}
+
+		return '';
 	}
 
 	/**
