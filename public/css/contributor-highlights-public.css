@@ -321,6 +321,10 @@
     margin: 0;
 }
 
+.contributor-bio-content p:not(:last-child) {
+    padding-bottom: 1em;
+}
+
 .contributor-bio-toggle {
     margin: 0.75em 0 0;
     padding: 0;
