@@ -424,45 +424,6 @@ class Contributor_Highlights_Public {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $atts['show_badges'] && $this->badges_have_items( $profile_data['badges'] ) ) : ?>
-				<div class="contributor-badges">
-					<?php if ( ! $atts['compact_version'] ) : ?>
-						<h3 class="contributor-badges-title"><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
-					<?php endif; ?>
-					<div class="contributor-badge-groups">
-						<?php foreach ( $profile_data['badges']['groups'] as $badge_group ) : ?>
-							<section class="contributor-badge-group contributor-badge-group--<?php echo esc_attr( $badge_group['slug'] ); ?>">
-								<header class="contributor-badge-group-head">
-									<h4 class="contributor-badge-group-title">
-										<span class="contributor-badge-group-dot" aria-hidden="true"></span>
-										<?php echo esc_html( $badge_group['name'] ); ?>
-									</h4>
-									<?php if ( ! empty( $badge_group['count'] ) ) : ?>
-										<span class="contributor-badge-group-count"><?php echo esc_html( $badge_group['count'] ); ?></span>
-									<?php endif; ?>
-								</header>
-								<div class="contributor-badge-grid">
-									<?php foreach ( $badge_group['badges'] as $badge ) : ?>
-										<div
-											class="badge-item badge-item--<?php echo esc_attr( $badge['slug'] ); ?>"
-											<?php if ( ! empty( $badge['title'] ) ) : ?>
-												title="<?php echo esc_attr( $badge['title'] ); ?>"
-											<?php endif; ?>
-										>
-											<span class="<?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"></span>
-											<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
-											<?php if ( ! empty( $badge['year'] ) ) : ?>
-												<span class="badge-year"><?php echo esc_html( $badge['year'] ); ?></span>
-											<?php endif; ?>
-										</div>
-									<?php endforeach; ?>
-								</div>
-							</section>
-						<?php endforeach; ?>
-					</div>
-				</div>
-			<?php endif; ?>
-
 			<?php
 			$wordpress_releases = isset( $profile_data['wordpress_releases'] ) ? $profile_data['wordpress_releases'] : array();
 			?>
@@ -516,6 +477,45 @@ class Contributor_Highlights_Public {
 						</ul>
 					</div>
 				</section>
+			<?php endif; ?>
+
+			<?php if ( $atts['show_badges'] && $this->badges_have_items( $profile_data['badges'] ) ) : ?>
+				<div class="contributor-badges">
+					<?php if ( ! $atts['compact_version'] ) : ?>
+						<h3 class="contributor-badges-title"><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+					<?php endif; ?>
+					<div class="contributor-badge-groups">
+						<?php foreach ( $profile_data['badges']['groups'] as $badge_group ) : ?>
+							<section class="contributor-badge-group contributor-badge-group--<?php echo esc_attr( $badge_group['slug'] ); ?>">
+								<header class="contributor-badge-group-head">
+									<h4 class="contributor-badge-group-title">
+										<span class="contributor-badge-group-dot" aria-hidden="true"></span>
+										<?php echo esc_html( $badge_group['name'] ); ?>
+									</h4>
+									<?php if ( ! empty( $badge_group['count'] ) ) : ?>
+										<span class="contributor-badge-group-count"><?php echo esc_html( $badge_group['count'] ); ?></span>
+									<?php endif; ?>
+								</header>
+								<div class="contributor-badge-grid">
+									<?php foreach ( $badge_group['badges'] as $badge ) : ?>
+										<div
+											class="badge-item badge-item--<?php echo esc_attr( $badge['slug'] ); ?>"
+											<?php if ( ! empty( $badge['title'] ) ) : ?>
+												title="<?php echo esc_attr( $badge['title'] ); ?>"
+											<?php endif; ?>
+										>
+											<span class="<?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"></span>
+											<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
+											<?php if ( ! empty( $badge['year'] ) ) : ?>
+												<span class="badge-year"><?php echo esc_html( $badge['year'] ); ?></span>
+											<?php endif; ?>
+										</div>
+									<?php endforeach; ?>
+								</div>
+							</section>
+						<?php endforeach; ?>
+					</div>
+				</div>
 			<?php endif; ?>
 		</div>
 		<?php
