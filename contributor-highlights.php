@@ -3,7 +3,7 @@
  * Plugin Name:       Contributor Highlights
  * Plugin URI:        https://www.rollybueno.com/plugins/contributor-highlights/
  * Description:       Showcase your WordPress.org contributions in style. This plugin pulls your public profile data—such as bio, contributions, and badges, and displays it beautifully on your site.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            Rolly Bueno
  * Author URI:        https://rollybueno.com
  * Requires at least: 5.0
@@ -23,7 +23,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * @since 1.0.0
  */
-define( 'CONTHI_VERSION', '1.0.0' );
+define( 'CONTHI_VERSION', '1.2.0' );
 define( 'CONTHI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONTHI_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

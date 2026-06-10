@@ -3,7 +3,7 @@ Contributors: rollybueno
 Tags: contributor, profile, wordpress.org, badges, block
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -16,11 +16,12 @@ Contributor Highlights is a lightweight plugin designed for individuals and orga
 
 With this plugin, you can easily fetch and present detailed contributor information from public WordPress.org profiles. The plugin pulls in and displays:
 
-- Contributor name and avatar
-- Contribution weekly pledge
-- Short biography
-- Contribution badges (e.g., Core Contributor, Plugin Developer, Translation Editor, etc.)
-- Meta information such as member since date, location, website, GitHub, employer, and job title
+- Contributor name, avatar, and profile meta (handle, location, member since, links, teams, and languages)
+- Current job
+- Short biography with optional read more/less
+- Recent impact stats (30, 90, and 12 month periods)
+- Team focus and WordPress releases (full card)
+- Contribution badges grouped by category (e.g., Core Contributor, Plugin Developer, Translation Editor, etc.)
 
 Perfect for personal portfolios, agency team pages, or contributor showcases on community sites.
 
@@ -78,6 +79,16 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 
 == Changelog ==
 
+= 1.2.0 =
+* New: Support for the redesigned profiles.wordpress.org markup and profile card sections (header, current job, bio, recent impact, team focus, WordPress releases, and grouped badges)
+* New: Block Display Sections panel with toggles for avatar, profile meta, current job, bio, recent impact, team focus, badges, and WordPress releases
+* New: Team chips in profile meta color-coded to match contributor badge colors
+* New: Collapsible bio with read more/less and spacing between paragraphs
+* Fix: Shortcode boolean attributes (e.g. show_bio="false") now parse correctly
+* Fix: Unified profile card typography and reduced contributor name size for consistency
+* Fix: Badges section moved to the end of the full profile card
+* Fix: WordPress releases legend simplified to role labels only
+
 = 1.1.0 =
 * New: Core AI, Playground and Credits Mentor badges
 * Fix: Broken dependencies that block the icons from rendering
@@ -87,6 +98,9 @@ There are no hard limits, but please be mindful of request frequency to WordPres
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Major update for the redesigned WordPress.org profile layout. Adds new profile sections, block display toggles, and refreshes parsing and styling. Clear profile caches or wait for them to expire after upgrading.
 
 = 1.0.0 =
 Initial release
