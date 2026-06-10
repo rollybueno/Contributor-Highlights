@@ -369,30 +369,30 @@ class Contributor_Highlights_Public {
 			?>
 			<?php if ( ! $atts['compact_version'] && $atts['show_team_focus'] && ! empty( $team_focus['teams'] ) ) : ?>
 				<section class="contributor-team-focus">
-					<div class="contributor-team-focus-card">
-						<h3 class="contributor-team-focus-title"><?php esc_html_e( 'Team focus', 'contributor-highlights' ); ?></h3>
+					<div class="contributor-spec-card">
+						<h3 class="contributor-spec-title"><?php esc_html_e( 'Team focus', 'contributor-highlights' ); ?></h3>
 						<?php if ( ! empty( $team_focus['summary'] ) ) : ?>
-							<p class="contributor-team-focus-summary"><?php echo esc_html( $team_focus['summary'] ); ?></p>
+							<p class="contributor-spec-summary"><?php echo esc_html( $team_focus['summary'] ); ?></p>
 						<?php endif; ?>
 						<div
-							class="contributor-team-focus-stack"
+							class="contributor-spec-stack"
 							role="img"
 							aria-label="<?php echo esc_attr( $this->format_team_focus_stack_label( $team_focus['teams'] ) ); ?>"
 						>
 							<?php foreach ( $team_focus['teams'] as $team ) : ?>
 								<span
-									class="contributor-team-focus-seg contributor-team-focus-seg--<?php echo esc_attr( $team['slug'] ); ?>"
+									class="contributor-spec-seg contributor-spec-seg--<?php echo esc_attr( $team['slug'] ); ?>"
 									style="width: <?php echo esc_attr( $team['percent'] ); ?>%;"
 									title="<?php echo esc_attr( sprintf( '%1$s (%2$s%%)', $team['name'], $team['percent'] ) ); ?>"
 								></span>
 							<?php endforeach; ?>
 						</div>
-						<ul class="contributor-team-focus-legend">
+						<ul class="contributor-spec-legend">
 							<?php foreach ( $team_focus['teams'] as $team ) : ?>
-								<li class="contributor-team-focus-legend-item">
-									<span class="contributor-team-focus-dot contributor-team-focus-dot--<?php echo esc_attr( $team['slug'] ); ?>" aria-hidden="true"></span>
-									<span class="contributor-team-focus-name"><?php echo esc_html( $team['name'] ); ?></span>
-									<span class="contributor-team-focus-percent"><?php echo esc_html( $team['percent'] ); ?>%</span>
+								<li class="contributor-spec-legend-item">
+									<span class="contributor-spec-dot contributor-spec-dot--<?php echo esc_attr( $team['slug'] ); ?>" aria-hidden="true"></span>
+									<span class="contributor-spec-label"><?php echo esc_html( $team['name'] ); ?></span>
+									<span class="contributor-spec-value"><?php echo esc_html( $team['percent'] ); ?>%</span>
 								</li>
 							<?php endforeach; ?>
 						</ul>
@@ -451,33 +451,49 @@ class Contributor_Highlights_Public {
 			?>
 			<?php if ( ! $atts['compact_version'] && $atts['show_releases'] && ! empty( $wordpress_releases['versions'] ) ) : ?>
 				<section class="contributor-releases">
-					<div class="contributor-releases-card">
-						<header class="contributor-releases-head">
-							<h3 class="contributor-releases-title"><?php esc_html_e( 'WordPress releases', 'contributor-highlights' ); ?></h3>
-							<span class="contributor-releases-count">
-								<?php
-								printf(
-									/* translators: %d: number of WordPress releases contributed to */
-									esc_html( _n( '%d release', '%d releases', count( $wordpress_releases['versions'] ), 'contributor-highlights' ) ),
-									count( $wordpress_releases['versions'] )
-								);
-								?>
-							</span>
-						</header>
+					<div class="contributor-spec-card">
+						<h3 class="contributor-spec-title"><?php esc_html_e( 'WordPress releases', 'contributor-highlights' ); ?></h3>
 						<?php if ( ! empty( $wordpress_releases['summary'] ) ) : ?>
-							<p class="contributor-releases-summary"><?php echo esc_html( $wordpress_releases['summary'] ); ?></p>
+							<p class="contributor-spec-summary"><?php echo esc_html( $wordpress_releases['summary'] ); ?></p>
 						<?php endif; ?>
-						<ul class="contributor-release-pills">
+						<?php if ( ! empty( $wordpress_releases['stack'] ) ) : ?>
+							<div
+								class="contributor-spec-stack"
+								role="img"
+								aria-label="<?php echo esc_attr( $this->format_wordpress_releases_stack_label( $wordpress_releases['roles'] ) ); ?>"
+							>
+								<?php foreach ( $wordpress_releases['stack'] as $segment ) : ?>
+									<span
+										class="contributor-spec-seg contributor-spec-seg--<?php echo esc_attr( $segment['slug'] ); ?>"
+										style="width: <?php echo esc_attr( $segment['width'] ); ?>%;"
+										<?php if ( ! empty( $segment['label'] ) ) : ?>
+											title="<?php echo esc_attr( $segment['label'] ); ?>"
+										<?php endif; ?>
+									></span>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+						<?php if ( ! empty( $wordpress_releases['roles'] ) ) : ?>
+							<ul class="contributor-spec-legend">
+								<?php foreach ( $wordpress_releases['roles'] as $role ) : ?>
+									<li class="contributor-spec-legend-item">
+										<span class="contributor-spec-dot contributor-spec-dot--<?php echo esc_attr( $role['slug'] ); ?>" aria-hidden="true"></span>
+										<span class="contributor-spec-label"><?php echo esc_html( $role['name'] ); ?></span>
+										<span class="contributor-spec-value"><?php echo esc_html( $role['count'] ); ?></span>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						<?php endif; ?>
+						<ul class="contributor-spec-versions">
 							<?php foreach ( $wordpress_releases['versions'] as $release ) : ?>
-								<?php
-								$release_role_class = '';
-								if ( ! empty( $release['role'] ) ) {
-									$release_role_class = ' contributor-release-pill--' . sanitize_html_class( sanitize_title( $release['role'] ) );
-								}
-								?>
-								<li class="contributor-release-pill<?php echo esc_attr( $release_role_class ); ?>">
-									<span class="contributor-release-pill__swatch" aria-hidden="true"></span>
-									<span class="contributor-release-pill__version"><?php echo esc_html( $release['version'] ); ?></span>
+								<li
+									class="contributor-spec-version"
+									<?php if ( ! empty( $release['role'] ) ) : ?>
+										title="<?php echo esc_attr( $release['role'] ); ?>"
+									<?php endif; ?>
+								>
+									<span class="contributor-spec-dot contributor-spec-dot--<?php echo esc_attr( $release['slug'] ); ?>" aria-hidden="true"></span>
+									<span class="contributor-spec-version-number"><?php echo esc_html( $release['version'] ); ?></span>
 								</li>
 							<?php endforeach; ?>
 						</ul>
@@ -537,7 +553,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v11_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v12_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -609,6 +625,8 @@ class Contributor_Highlights_Public {
 			),
 			'wordpress_releases'  => array(
 				'summary'  => '',
+				'stack'    => array(),
+				'roles'    => array(),
 				'versions' => array(),
 			),
 			'team_focus'          => array(
@@ -766,6 +784,8 @@ class Contributor_Highlights_Public {
 	private function parse_wordpress_releases( $xpath ) {
 		$releases = array(
 			'summary'  => '',
+			'stack'    => array(),
+			'roles'    => array(),
 			'versions' => array(),
 		);
 
@@ -779,19 +799,79 @@ class Contributor_Highlights_Public {
 			$releases['summary'] = esc_html( trim( $summary_node->textContent ) );
 		}
 
+		foreach ( $xpath->query( './/div[contains(@class, "spec-stack")]//span[contains(@class, "spec-seg")]', $section ) as $segment_node ) {
+			$segment_class = $this->extract_spec_segment_class( $segment_node->getAttribute( 'class' ) );
+			$width         = 0;
+
+			if ( preg_match( '/width:\s*([0-9.]+)%/', $segment_node->getAttribute( 'style' ), $matches ) ) {
+				$width = (float) $matches[1];
+			}
+
+			$releases['stack'][] = array(
+				'slug'  => sanitize_html_class( str_replace( 'seg-', '', $segment_class ) ),
+				'width' => $width,
+				'label' => esc_attr( trim( $segment_node->getAttribute( 'title' ) ) ),
+			);
+		}
+
+		foreach ( $xpath->query( './/ul[contains(@class, "spec-legend")]//li', $section ) as $legend_item ) {
+			$role_node  = $xpath->query( './/span[contains(@class, "leg-team")]', $legend_item )->item( 0 );
+			$count_node = $xpath->query( './/span[contains(@class, "leg-pct")]', $legend_item )->item( 0 );
+			$dot_node   = $xpath->query( './/span[contains(@class, "spec-dot")]', $legend_item )->item( 0 );
+
+			if ( ! $role_node || ! $count_node ) {
+				continue;
+			}
+
+			$segment_class = $dot_node ? $this->extract_spec_segment_class( $dot_node->getAttribute( 'class' ) ) : 'seg-stone';
+
+			$releases['roles'][] = array(
+				'name'  => esc_html( trim( $role_node->textContent ) ),
+				'count' => (int) preg_replace( '/[^0-9]/', '', $count_node->textContent ),
+				'slug'  => sanitize_html_class( str_replace( 'seg-', '', $segment_class ) ),
+			);
+		}
+
 		foreach ( $xpath->query( './/ul[contains(@class, "spec-versions")]//li[contains(@class, "ver-chip")]', $section ) as $chip_node ) {
 			$version_node = $xpath->query( './/span[contains(@class, "ver-num")]', $chip_node )->item( 0 );
+			$swatch_node  = $xpath->query( './/span[contains(@class, "ver-sw")]', $chip_node )->item( 0 );
+
 			if ( ! $version_node ) {
 				continue;
 			}
 
+			$segment_class = $swatch_node ? $this->extract_spec_segment_class( $swatch_node->getAttribute( 'class' ) ) : 'seg-stone';
+
 			$releases['versions'][] = array(
 				'version' => esc_html( trim( $version_node->textContent ) ),
 				'role'    => esc_attr( trim( $chip_node->getAttribute( 'title' ) ) ),
+				'slug'    => sanitize_html_class( str_replace( 'seg-', '', $segment_class ) ),
 			);
 		}
 
 		return $releases;
+	}
+
+	/**
+	 * Format an accessible label for the WordPress releases stack bar.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $roles Parsed release role counts.
+	 * @return   string       Accessible stack label.
+	 */
+	private function format_wordpress_releases_stack_label( $roles ) {
+		$parts = array();
+
+		foreach ( $roles as $role ) {
+			$parts[] = sprintf( '%1$s %2$d', $role['name'], $role['count'] );
+		}
+
+		return sprintf(
+			/* translators: %s: comma-separated release role counts */
+			__( 'Releases by role: %s', 'contributor-highlights' ),
+			implode( ', ', $parts )
+		);
 	}
 
 	/**
