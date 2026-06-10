@@ -75,6 +75,7 @@ class Contributor_Highlights_Public {
 				'show_bio'           => true,
 				'show_contributions' => true,
 				'show_badges'        => true,
+				'show_releases'      => true,
 				'show_meta'          => true,
 			),
 			$atts,
@@ -407,6 +408,45 @@ class Contributor_Highlights_Public {
 					</div>
 				</div>
 			<?php endif; ?>
+
+			<?php
+			$wordpress_releases = isset( $profile_data['wordpress_releases'] ) ? $profile_data['wordpress_releases'] : array();
+			?>
+			<?php if ( ! $atts['compact_version'] && $atts['show_releases'] && ! empty( $wordpress_releases['versions'] ) ) : ?>
+				<section class="contributor-releases">
+					<div class="contributor-releases-card">
+						<header class="contributor-releases-head">
+							<h3 class="contributor-releases-title"><?php esc_html_e( 'WordPress releases', 'contributor-highlights' ); ?></h3>
+							<span class="contributor-releases-count">
+								<?php
+								printf(
+									/* translators: %d: number of WordPress releases contributed to */
+									esc_html( _n( '%d release', '%d releases', count( $wordpress_releases['versions'] ), 'contributor-highlights' ) ),
+									count( $wordpress_releases['versions'] )
+								);
+								?>
+							</span>
+						</header>
+						<?php if ( ! empty( $wordpress_releases['summary'] ) ) : ?>
+							<p class="contributor-releases-summary"><?php echo esc_html( $wordpress_releases['summary'] ); ?></p>
+						<?php endif; ?>
+						<ul class="contributor-release-pills">
+							<?php foreach ( $wordpress_releases['versions'] as $release ) : ?>
+								<?php
+								$release_role_class = '';
+								if ( ! empty( $release['role'] ) ) {
+									$release_role_class = ' contributor-release-pill--' . sanitize_html_class( sanitize_title( $release['role'] ) );
+								}
+								?>
+								<li class="contributor-release-pill<?php echo esc_attr( $release_role_class ); ?>">
+									<span class="contributor-release-pill__swatch" aria-hidden="true"></span>
+									<span class="contributor-release-pill__version"><?php echo esc_html( $release['version'] ); ?></span>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				</section>
+			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();
@@ -460,7 +500,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v9_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v10_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -527,10 +567,14 @@ class Contributor_Highlights_Public {
 			),
 			'slack'         => '',
 			'contributions' => '',
-			'badges'        => array(
+			'badges'              => array(
 				'groups' => array(),
 			),
-			'user_meta'     => array(),
+			'wordpress_releases'  => array(
+				'summary'  => '',
+				'versions' => array(),
+			),
+			'user_meta'           => array(),
 		);
 
 		$header = $this->parse_profile_header( $xpath, $username );
@@ -577,9 +621,49 @@ class Contributor_Highlights_Public {
 			}
 		}
 
-		$profile_data['badges'] = $this->parse_badges( $xpath );
+		$profile_data['badges']              = $this->parse_badges( $xpath );
+		$profile_data['wordpress_releases'] = $this->parse_wordpress_releases( $xpath );
 
 		return $profile_data;
+	}
+
+	/**
+	 * Parse WordPress release contributions from the profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath XPath instance for the profile document.
+	 * @return   array           Release summary and version list.
+	 */
+	private function parse_wordpress_releases( $xpath ) {
+		$releases = array(
+			'summary'  => '',
+			'versions' => array(),
+		);
+
+		$section = $xpath->query( '//section[contains(@class, "wp-p2-releases")]' )->item( 0 );
+		if ( ! $section ) {
+			return $releases;
+		}
+
+		$summary_node = $xpath->query( './/div[contains(@class, "sub")]', $section )->item( 0 );
+		if ( $summary_node ) {
+			$releases['summary'] = esc_html( trim( $summary_node->textContent ) );
+		}
+
+		foreach ( $xpath->query( './/ul[contains(@class, "spec-versions")]//li[contains(@class, "ver-chip")]', $section ) as $chip_node ) {
+			$version_node = $xpath->query( './/span[contains(@class, "ver-num")]', $chip_node )->item( 0 );
+			if ( ! $version_node ) {
+				continue;
+			}
+
+			$releases['versions'][] = array(
+				'version' => esc_html( trim( $version_node->textContent ) ),
+				'role'    => esc_attr( trim( $chip_node->getAttribute( 'title' ) ) ),
+			);
+		}
+
+		return $releases;
 	}
 
 	/**
