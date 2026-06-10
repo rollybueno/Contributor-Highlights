@@ -77,11 +77,28 @@ class Contributor_Highlights_Public {
 				'show_badges'        => true,
 				'show_releases'      => true,
 				'show_team_focus'    => true,
+				'show_current_job'   => true,
 				'show_meta'          => true,
 			),
 			$atts,
 			'contributor_profile'
 		);
+
+		$boolean_keys = array(
+			'compact_version',
+			'show_avatar',
+			'show_bio',
+			'show_contributions',
+			'show_badges',
+			'show_releases',
+			'show_team_focus',
+			'show_current_job',
+			'show_meta',
+		);
+
+		foreach ( $boolean_keys as $boolean_key ) {
+			$atts[ $boolean_key ] = $this->parse_bool_attr( $atts[ $boolean_key ] );
+		}
 
 		if ( empty( $atts['username'] ) ) {
 			return '<p>' . __( 'Please provide a WordPress.org username.', 'contributor-highlights' ) . '</p>';
@@ -145,7 +162,7 @@ class Contributor_Highlights_Public {
 						</h2>
 					<?php endif; ?>
 
-					<?php if ( $atts['compact_version'] && $atts['show_meta'] && ! empty( $current_job['role'] ) ) : ?>
+					<?php if ( $atts['compact_version'] && $atts['show_current_job'] && ! empty( $current_job['role'] ) ) : ?>
 						<p class="contributor-current-job-line">
 							<?php echo esc_html( $current_job['role'] ); ?>
 							<?php if ( ! empty( $current_job['company'] ) ) : ?>
@@ -161,7 +178,7 @@ class Contributor_Highlights_Public {
 
 					<?php
 					$handle_parts = array();
-					if ( ! empty( $profile_data['username'] ) ) {
+					if ( $atts['show_meta'] && ! empty( $profile_data['username'] ) ) {
 						$handle_parts[] = array(
 							'class' => 'contributor-handle',
 							'html'  => ! empty( $profile_data['profile_url'] )
@@ -269,7 +286,7 @@ class Contributor_Highlights_Public {
 				</div>
 			</div>
 
-			<?php if ( ! $atts['compact_version'] && $atts['show_meta'] && ! empty( $current_job['role'] ) ) : ?>
+			<?php if ( ! $atts['compact_version'] && $atts['show_current_job'] && ! empty( $current_job['role'] ) ) : ?>
 				<section class="contributor-current-job">
 					<h3 class="contributor-current-job-title"><?php esc_html_e( 'Current Job', 'contributor-highlights' ); ?></h3>
 					<div class="contributor-current-job-card">
@@ -1503,5 +1520,32 @@ class Contributor_Highlights_Public {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Parse a shortcode boolean attribute value.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    mixed $value   Raw attribute value.
+	 * @param    bool  $default Default when value is ambiguous.
+	 * @return   bool           Parsed boolean.
+	 */
+	private function parse_bool_attr( $value, $default = false ) {
+		if ( is_bool( $value ) ) {
+			return $value;
+		}
+
+		$value = strtolower( trim( (string) $value ) );
+
+		if ( in_array( $value, array( '1', 'true', 'yes', 'on' ), true ) ) {
+			return true;
+		}
+
+		if ( in_array( $value, array( '0', 'false', 'no', 'off', '' ), true ) ) {
+			return false;
+		}
+
+		return $default;
 	}
 }

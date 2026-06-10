@@ -58,6 +58,14 @@ class Contributor_Highlights_Blocks {
 						'type'    => 'boolean',
 						'default' => true,
 					),
+					'showMeta'          => array(
+						'type'    => 'boolean',
+						'default' => true,
+					),
+					'showCurrentJob'    => array(
+						'type'    => 'boolean',
+						'default' => true,
+					),
 					'showBio'           => array(
 						'type'    => 'boolean',
 						'default' => true,
@@ -66,11 +74,15 @@ class Contributor_Highlights_Blocks {
 						'type'    => 'boolean',
 						'default' => true,
 					),
+					'showTeamFocus'     => array(
+						'type'    => 'boolean',
+						'default' => true,
+					),
 					'showBadges'        => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'showMeta'          => array(
+					'showReleases'      => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
@@ -133,28 +145,62 @@ class Contributor_Highlights_Blocks {
 	 * @return   string               The rendered block content.
 	 */
 	public function render_block( $attributes ) {
+		$attributes = wp_parse_args(
+			$attributes,
+			array(
+				'username'          => '',
+				'compactVersion'    => false,
+				'showAvatar'        => true,
+				'showMeta'          => true,
+				'showCurrentJob'    => true,
+				'showBio'           => true,
+				'showContributions' => true,
+				'showTeamFocus'     => true,
+				'showBadges'        => true,
+				'showReleases'      => true,
+				'align'             => '',
+			)
+		);
+
 		$shortcode = '[contributor_profile';
 
 		if ( ! empty( $attributes['username'] ) ) {
 			$shortcode .= ' username="' . esc_attr( $attributes['username'] ) . '"';
 		}
 
-		$shortcode .= ' compact_version="' . $attributes['compactVersion'] . '"';
-		$shortcode .= ' show_avatar="' . $attributes['showAvatar'] . '"';
-		$shortcode .= ' show_bio="' . $attributes['showBio'] . '"';
-		$shortcode .= ' show_contributions="' . $attributes['showContributions'] . '"';
-		$shortcode .= ' show_badges="' . $attributes['showBadges'] . '"';
-		$shortcode .= ' show_meta="' . $attributes['showMeta'] . '"';
+		$shortcode .= ' compact_version="' . $this->bool_attr( $attributes['compactVersion'] ) . '"';
+		$shortcode .= ' show_avatar="' . $this->bool_attr( $attributes['showAvatar'] ) . '"';
+		$shortcode .= ' show_meta="' . $this->bool_attr( $attributes['showMeta'] ) . '"';
+		$shortcode .= ' show_current_job="' . $this->bool_attr( $attributes['showCurrentJob'] ) . '"';
+		$shortcode .= ' show_bio="' . $this->bool_attr( $attributes['showBio'] ) . '"';
+		$shortcode .= ' show_contributions="' . $this->bool_attr( $attributes['showContributions'] ) . '"';
+		$shortcode .= ' show_team_focus="' . $this->bool_attr( $attributes['showTeamFocus'] ) . '"';
+		$shortcode .= ' show_badges="' . $this->bool_attr( $attributes['showBadges'] ) . '"';
+		$shortcode .= ' show_releases="' . $this->bool_attr( $attributes['showReleases'] ) . '"';
 		$shortcode .= ']';
 
-		$wrapper_attributes = get_block_wrapper_attributes(array(
-			'class' => !empty($attributes['align']) ? 'align' . $attributes['align'] : '',
-		));
-		
+		$wrapper_attributes = get_block_wrapper_attributes(
+			array(
+				'class' => ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '',
+			)
+		);
+
 		return sprintf(
 			'<div %s>%s</div>',
 			$wrapper_attributes,
-			do_shortcode($shortcode)
+			do_shortcode( $shortcode )
 		);
+	}
+
+	/**
+	 * Convert a boolean block attribute to a shortcode-friendly string.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    mixed $value Attribute value.
+	 * @return   string       "true" or "false".
+	 */
+	private function bool_attr( $value ) {
+		return ! empty( $value ) ? 'true' : 'false';
 	}
 }
