@@ -101,6 +101,14 @@ class Contributor_Highlights_Public {
 			return '<p>' . $profile_data->get_error_message() . '</p>';
 		}
 
+		$header      = isset( $profile_data['header'] ) ? $profile_data['header'] : array();
+		$current_job = isset( $profile_data['current_job'] ) ? $profile_data['current_job'] : array();
+		$has_header_meta = ! empty( $header['location'] )
+			|| ! empty( $header['joined'] )
+			|| ! empty( $header['links'] )
+			|| ! empty( $header['teams'] )
+			|| ! empty( $header['languages'] );
+
 		ob_start();
 		?>
 		<div class="contributor-profile">
@@ -119,16 +127,6 @@ class Contributor_Highlights_Public {
 				<?php endif; ?>
 
 				<div class="contributor-info">
-					<?php
-					$header = isset( $profile_data['header'] ) ? $profile_data['header'] : array();
-					$has_header_meta = ! empty( $header['jobline'] )
-						|| ! empty( $header['location'] )
-						|| ! empty( $header['joined'] )
-						|| ! empty( $header['links'] )
-						|| ! empty( $header['teams'] )
-						|| ! empty( $header['languages'] );
-					?>
-
 					<?php if ( ! empty( $profile_data['name'] ) ) : ?>
 						<h2 class="contributor-name">
 							<?php if ( ! empty( $profile_data['profile_url'] ) ) : ?>
@@ -141,8 +139,14 @@ class Contributor_Highlights_Public {
 						</h2>
 					<?php endif; ?>
 
-					<?php if ( $atts['show_meta'] && ! empty( $header['jobline'] ) ) : ?>
-						<p class="contributor-jobline"><?php echo esc_html( $header['jobline'] ); ?></p>
+					<?php if ( $atts['compact_version'] && $atts['show_meta'] && ! empty( $current_job['role'] ) ) : ?>
+						<p class="contributor-current-job-line">
+							<?php echo esc_html( $current_job['role'] ); ?>
+							<?php if ( ! empty( $current_job['company'] ) ) : ?>
+								<?php esc_html_e( 'at', 'contributor-highlights' ); ?>
+								<?php echo esc_html( $current_job['company'] ); ?>
+							<?php endif; ?>
+						</p>
 					<?php endif; ?>
 
 					<?php
@@ -255,6 +259,25 @@ class Contributor_Highlights_Public {
 				</div>
 			</div>
 
+			<?php if ( ! $atts['compact_version'] && $atts['show_meta'] && ! empty( $current_job['role'] ) ) : ?>
+				<section class="contributor-current-job">
+					<h3 class="contributor-current-job-title"><?php esc_html_e( 'Current Job', 'contributor-highlights' ); ?></h3>
+					<div class="contributor-current-job-card">
+						<div class="contributor-current-job-head">
+							<span class="contributor-current-job-role"><?php echo esc_html( $current_job['role'] ); ?></span>
+							<?php if ( ! empty( $current_job['is_present'] ) ) : ?>
+								<span class="contributor-current-job-badge"><?php esc_html_e( 'Present', 'contributor-highlights' ); ?></span>
+							<?php elseif ( ! empty( $current_job['dates'] ) ) : ?>
+								<span class="contributor-current-job-dates"><?php echo esc_html( $current_job['dates'] ); ?></span>
+							<?php endif; ?>
+						</div>
+						<?php if ( ! empty( $current_job['company'] ) ) : ?>
+							<p class="contributor-current-job-company"><?php echo esc_html( $current_job['company'] ); ?></p>
+						<?php endif; ?>
+					</div>
+				</section>
+			<?php endif; ?>
+
 			<?php if ( $atts['show_bio'] && ! empty( $profile_data['bio'] ) ) : ?>
 				<div class="contributor-bio">
 					<?php echo wp_kses_post( $profile_data['bio'] ); ?>
@@ -336,7 +359,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v3_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v4_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -389,6 +412,12 @@ class Contributor_Highlights_Public {
 				'teams'     => array(),
 				'languages' => array(),
 			),
+			'current_job'   => array(
+				'role'        => '',
+				'company'     => '',
+				'is_present'  => false,
+				'dates'       => '',
+			),
 			'bio'           => '',
 			'slack'         => '',
 			'contributions' => '',
@@ -402,6 +431,7 @@ class Contributor_Highlights_Public {
 		$profile_data['avatar']      = $header['avatar'];
 		$profile_data['profile_url'] = $header['profile_url'];
 		$profile_data['header']      = $header['details'];
+		$profile_data['current_job'] = $this->parse_current_job( $xpath, $profile_data['header']['jobline'] );
 
 		// Get Slack
 		$slack_node = $xpath->query( '//p[@id="slack-username"]//span[contains(@class, "username")]' );
@@ -465,6 +495,76 @@ class Contributor_Highlights_Public {
 		}
 
 		return $profile_data;
+	}
+
+	/**
+	 * Parse the contributor's current job from the WordPress.org profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath         XPath instance for the profile document.
+	 * @param    string   $jobline_fallback Optional hero jobline used when jobs block is absent.
+	 * @return   array                    Parsed current job fields.
+	 */
+	private function parse_current_job( $xpath, $jobline_fallback = '' ) {
+		$current_job = array(
+			'role'       => '',
+			'company'    => '',
+			'is_present' => false,
+			'dates'      => '',
+		);
+
+		$job_entries = $xpath->query( "//div[@id='wporg-jobs-public']//div[contains(@class, 'job-entry')]" );
+		if ( $job_entries->length > 0 ) {
+			$entry = $job_entries->item( 0 );
+
+			$role_node = $xpath->query( ".//div[contains(@class, 'role')]", $entry )->item( 0 );
+			if ( $role_node ) {
+				$current_job['role'] = esc_html( trim( $role_node->textContent ) );
+			}
+
+			$company_node = $xpath->query( ".//div[contains(@class, 'company')]", $entry )->item( 0 );
+			if ( $company_node ) {
+				$current_job['company'] = esc_html( trim( $company_node->textContent ) );
+			}
+
+			$dates_node = $xpath->query( ".//div[contains(@class, 'dates')]", $entry )->item( 0 );
+			if ( $dates_node ) {
+				$dates = trim( preg_replace( '/\s+/', ' ', $dates_node->textContent ) );
+				$current_job['dates'] = esc_html( $dates );
+				$current_job['is_present'] = ( false !== stripos( $dates, 'present' ) );
+			}
+		}
+
+		if ( empty( $current_job['role'] ) && ! empty( $jobline_fallback ) ) {
+			$current_job = $this->parse_jobline_fallback( $jobline_fallback, $current_job );
+		}
+
+		return $current_job;
+	}
+
+	/**
+	 * Build current job data from the hero jobline string.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $jobline      Hero jobline text.
+	 * @param    array  $current_job  Existing current job defaults.
+	 * @return   array                Parsed current job fields.
+	 */
+	private function parse_jobline_fallback( $jobline, $current_job ) {
+		$jobline = trim( $jobline );
+
+		if ( preg_match( '/^(.+?)\s+at\s+(.+)$/i', $jobline, $matches ) ) {
+			$current_job['role']       = esc_html( trim( $matches[1] ) );
+			$current_job['company']    = esc_html( trim( $matches[2] ) );
+			$current_job['is_present'] = true;
+		} else {
+			$current_job['role']       = esc_html( $jobline );
+			$current_job['is_present'] = true;
+		}
+
+		return $current_job;
 	}
 
 	/**
