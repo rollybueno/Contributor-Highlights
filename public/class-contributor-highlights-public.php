@@ -88,11 +88,10 @@ class Contributor_Highlights_Public {
 		// If compact version is true,
 		// only show meta and badges, and hide the name
 		if ( $atts['compact_version'] ) {
-			$atts['show_bio']           = false;
-			$atts['show_contributions'] = false;
-			$atts['show_avatar']        = true;
-			$atts['show_meta']          = true;
-			$atts['show_badges']        = true;
+			$atts['show_bio']    = false;
+			$atts['show_avatar'] = true;
+			$atts['show_meta']   = true;
+			$atts['show_badges'] = true;
 		}
 
 		$profile_data = $this->get_profile_data( $atts['username'] );
@@ -103,6 +102,11 @@ class Contributor_Highlights_Public {
 
 		$header      = isset( $profile_data['header'] ) ? $profile_data['header'] : array();
 		$current_job = isset( $profile_data['current_job'] ) ? $profile_data['current_job'] : array();
+		$recent_impact = isset( $profile_data['recent_impact'] ) ? $profile_data['recent_impact'] : array();
+		$impact_periods = $this->get_ordered_impact_periods( $recent_impact );
+		$impact_line    = $this->format_recent_impact_line(
+			isset( $recent_impact['12m'] ) ? $recent_impact['12m'] : array()
+		);
 		$has_header_meta = ! empty( $header['location'] )
 			|| ! empty( $header['joined'] )
 			|| ! empty( $header['links'] )
@@ -147,6 +151,10 @@ class Contributor_Highlights_Public {
 								<?php echo esc_html( $current_job['company'] ); ?>
 							<?php endif; ?>
 						</p>
+					<?php endif; ?>
+
+					<?php if ( $atts['compact_version'] && $atts['show_contributions'] && ! empty( $impact_line ) ) : ?>
+						<p class="contributor-recent-impact-line contributor-recent-impact-line--compact"><?php echo esc_html( $impact_line ); ?></p>
 					<?php endif; ?>
 
 					<?php
@@ -312,6 +320,48 @@ class Contributor_Highlights_Public {
 				</section>
 			<?php endif; ?>
 
+			<?php if ( ! $atts['compact_version'] && $atts['show_contributions'] && ! empty( $impact_periods ) ) : ?>
+				<section class="contributor-recent-impact">
+					<h3 class="contributor-recent-impact-title"><?php esc_html_e( 'Recent impact', 'contributor-highlights' ); ?></h3>
+					<?php if ( ! empty( $recent_impact['legend'] ) ) : ?>
+						<p class="contributor-recent-impact-legend"><?php echo esc_html( $recent_impact['legend'] ); ?></p>
+					<?php endif; ?>
+					<div class="contributor-impact-tiles">
+						<?php foreach ( $impact_periods as $period ) : ?>
+							<div class="contributor-impact-tile">
+								<?php if ( ! empty( $period['period_label'] ) ) : ?>
+									<span class="contributor-impact-period"><?php echo esc_html( $period['period_label'] ); ?></span>
+								<?php endif; ?>
+								<div class="contributor-impact-main">
+									<span class="contributor-impact-count"><?php echo esc_html( $period['contributions'] ); ?></span>
+									<span class="contributor-impact-unit"><?php esc_html_e( 'contributions', 'contributor-highlights' ); ?></span>
+								</div>
+								<div class="contributor-impact-breakdown">
+									<?php if ( ! empty( $period['high'] ) ) : ?>
+										<span class="contributor-impact-metric contributor-impact-metric--high">
+											<span class="contributor-impact-metric-label"><?php esc_html_e( 'high', 'contributor-highlights' ); ?></span>
+											<span class="contributor-impact-metric-value"><?php echo esc_html( $period['high'] ); ?></span>
+										</span>
+									<?php endif; ?>
+									<?php if ( ! empty( $period['medium'] ) ) : ?>
+										<span class="contributor-impact-metric contributor-impact-metric--medium">
+											<span class="contributor-impact-metric-label"><?php esc_html_e( 'medium', 'contributor-highlights' ); ?></span>
+											<span class="contributor-impact-metric-value"><?php echo esc_html( $period['medium'] ); ?></span>
+										</span>
+									<?php endif; ?>
+									<?php if ( ! empty( $period['score'] ) ) : ?>
+										<span class="contributor-impact-metric contributor-impact-metric--score">
+											<span class="contributor-impact-metric-label"><?php esc_html_e( 'score', 'contributor-highlights' ); ?></span>
+											<span class="contributor-impact-metric-value"><?php echo esc_html( $period['score'] ); ?></span>
+										</span>
+									<?php endif; ?>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</section>
+			<?php endif; ?>
+
 			<?php if ( $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
 				<h3><?php esc_html_e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
@@ -387,7 +437,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v6_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v8_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -449,6 +499,9 @@ class Contributor_Highlights_Public {
 			'bio'           => array(
 				'content' => '',
 			),
+			'recent_impact' => array(
+				'legend' => '',
+			),
 			'slack'         => '',
 			'contributions' => '',
 			'badges'        => array(),
@@ -469,7 +522,8 @@ class Contributor_Highlights_Public {
 			$profile_data['slack'] = esc_html( trim( $slack_node->item( 0 )->textContent ) );
 		}
 
-		$profile_data['bio'] = $this->parse_bio( $xpath, $dom );
+		$profile_data['bio']           = $this->parse_bio( $xpath, $dom );
+		$profile_data['recent_impact'] = $this->parse_recent_impact( $xpath );
 
 		// Get contributions
 		$contribution_nodes = $xpath->query( '//div[@id="content-about"]/div[@class="item-meta-contribution"]/p' );
@@ -521,6 +575,168 @@ class Contributor_Highlights_Public {
 		}
 
 		return $profile_data;
+	}
+
+	/**
+	 * Parse recent impact stats from the WordPress.org profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath XPath instance for the profile document.
+	 * @return   array           Impact stats keyed by period slug.
+	 */
+	private function parse_recent_impact( $xpath ) {
+		$impact = array(
+			'legend' => '',
+		);
+
+		$legend_node = $xpath->query( '//section[contains(@class, "wp-p2-impact")]//p[contains(@class, "wp-p2-impact-legend")]' )->item( 0 );
+		if ( $legend_node ) {
+			$impact['legend'] = esc_html( trim( $legend_node->textContent ) );
+		}
+
+		foreach ( $xpath->query( '//section[contains(@class, "wp-p2-impact")]//div[contains(@class, "impact-tile")]' ) as $tile ) {
+			$period_node = $xpath->query( './/div[contains(@class, "win")]//span', $tile )->item( 0 );
+			$count_node  = $xpath->query( './/div[contains(@class, "main")]//span[contains(@class, "n")]', $tile )->item( 0 );
+
+			if ( ! $period_node || ! $count_node ) {
+				continue;
+			}
+
+			$period_label = trim( $period_node->textContent );
+			$period_key   = $this->normalize_impact_period_key( $period_label );
+			$metrics      = array(
+				'high'   => '',
+				'medium' => '',
+				'score'  => '',
+			);
+
+			foreach ( $xpath->query( './/div[contains(@class, "kv")]', $tile ) as $metric_node ) {
+				$metric_label_node = $xpath->query( './/span[contains(@class, "k")]', $metric_node )->item( 0 );
+				$metric_value_node = $xpath->query( './/b', $metric_node )->item( 0 );
+
+				if ( ! $metric_label_node || ! $metric_value_node ) {
+					continue;
+				}
+
+				$metric_key = strtolower( trim( $metric_label_node->textContent ) );
+				if ( ! array_key_exists( $metric_key, $metrics ) ) {
+					continue;
+				}
+
+				$metrics[ $metric_key ] = esc_html( trim( $metric_value_node->textContent ) );
+			}
+
+			$impact[ $period_key ] = array(
+				'contributions' => esc_html( trim( $count_node->textContent ) ),
+				'high'          => $metrics['high'],
+				'medium'        => $metrics['medium'],
+				'score'         => $metrics['score'],
+				'period_label'  => esc_html( $this->normalize_impact_period_label( $period_label ) ),
+			);
+		}
+
+		return $impact;
+	}
+
+	/**
+	 * Return impact periods in display order.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $recent_impact Parsed recent impact data.
+	 * @return   array                Ordered period data arrays.
+	 */
+	private function get_ordered_impact_periods( $recent_impact ) {
+		$periods = array();
+
+		foreach ( array( '30d', '90d', '12m' ) as $period_key ) {
+			if ( empty( $recent_impact[ $period_key ]['contributions'] ) ) {
+				continue;
+			}
+
+			$periods[] = $recent_impact[ $period_key ];
+		}
+
+		return $periods;
+	}
+
+	/**
+	 * Normalize an impact period label into a stable array key.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $period_label Raw period label from the profile page.
+	 * @return   string               Normalized period key.
+	 */
+	private function normalize_impact_period_key( $period_label ) {
+		$period_label = strtolower( trim( $period_label ) );
+
+		if ( false !== strpos( $period_label, '12 month' ) ) {
+			return '12m';
+		}
+
+		if ( false !== strpos( $period_label, '90 day' ) ) {
+			return '90d';
+		}
+
+		if ( false !== strpos( $period_label, '30 day' ) ) {
+			return '30d';
+		}
+
+		return sanitize_title( $period_label );
+	}
+
+	/**
+	 * Normalize an impact period label for display.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $period_label Raw period label from the profile page.
+	 * @return   string               Display-friendly period label.
+	 */
+	private function normalize_impact_period_label( $period_label ) {
+		$period_label = trim( $period_label );
+
+		return preg_replace( '/^Last\s+/i', '', $period_label );
+	}
+
+	/**
+	 * Format a recent impact period into a single summary line.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $period_data Parsed impact data for one period.
+	 * @return   string             Formatted impact summary line.
+	 */
+	private function format_recent_impact_line( $period_data ) {
+		if ( empty( $period_data['contributions'] ) ) {
+			return '';
+		}
+
+		$line = sprintf(
+			/* translators: %s: number of contributions */
+			__( '%s contributions', 'contributor-highlights' ),
+			$period_data['contributions']
+		);
+
+		if ( ! empty( $period_data['score'] ) ) {
+			$line .= sprintf(
+				/* translators: %s: weighted impact score */
+				__( ' · score %s', 'contributor-highlights' ),
+				$period_data['score']
+			);
+		}
+
+		if ( ! empty( $period_data['period_label'] ) ) {
+			$line .= sprintf(
+				/* translators: %s: impact period label, e.g. 12 months */
+				__( ' (%s)', 'contributor-highlights' ),
+				$period_data['period_label']
+			);
+		}
+
+		return $line;
 	}
 
 	/**

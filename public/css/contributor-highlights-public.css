@@ -257,6 +257,105 @@
     text-decoration: underline;
 }
 
+.contributor-recent-impact {
+    margin: 0 0 2em;
+}
+
+.contributor-recent-impact-title {
+    margin: 0 0 0.75em;
+    color: #23282d;
+    font-size: 1.1rem;
+}
+
+.contributor-recent-impact-legend {
+    margin: 0 0 1em;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.contributor-impact-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1em;
+}
+
+.contributor-impact-tile {
+    padding: 1em 1.1em;
+    background: #f9f9f9;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+}
+
+.contributor-impact-period {
+    display: block;
+    margin: 0 0 0.75em;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.contributor-impact-main {
+    margin: 0 0 0.85em;
+}
+
+.contributor-impact-count {
+    display: block;
+    color: #23282d;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.contributor-impact-unit {
+    display: block;
+    margin-top: 0.15em;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.contributor-impact-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 0.75em;
+}
+
+.contributor-impact-metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    color: #444;
+    font-size: 0.85rem;
+}
+
+.contributor-impact-metric-label {
+    color: #666;
+    text-transform: capitalize;
+}
+
+.contributor-impact-metric-value {
+    font-weight: 600;
+}
+
+.contributor-recent-impact-line {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.contributor-recent-impact-line--compact {
+    margin: 0 0 1em;
+}
+
+@media (max-width: 768px) {
+    .contributor-impact-tiles {
+        grid-template-columns: 1fr;
+    }
+}
+
 .contributor-contributions {
     margin: 2em 0;
     padding: 1.5em;
