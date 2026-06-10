@@ -76,6 +76,7 @@ class Contributor_Highlights_Public {
 				'show_contributions' => true,
 				'show_badges'        => true,
 				'show_releases'      => true,
+				'show_team_focus'    => true,
 				'show_meta'          => true,
 			),
 			$atts,
@@ -363,6 +364,42 @@ class Contributor_Highlights_Public {
 				</section>
 			<?php endif; ?>
 
+			<?php
+			$team_focus = isset( $profile_data['team_focus'] ) ? $profile_data['team_focus'] : array();
+			?>
+			<?php if ( ! $atts['compact_version'] && $atts['show_team_focus'] && ! empty( $team_focus['teams'] ) ) : ?>
+				<section class="contributor-team-focus">
+					<div class="contributor-team-focus-card">
+						<h3 class="contributor-team-focus-title"><?php esc_html_e( 'Team focus', 'contributor-highlights' ); ?></h3>
+						<?php if ( ! empty( $team_focus['summary'] ) ) : ?>
+							<p class="contributor-team-focus-summary"><?php echo esc_html( $team_focus['summary'] ); ?></p>
+						<?php endif; ?>
+						<div
+							class="contributor-team-focus-stack"
+							role="img"
+							aria-label="<?php echo esc_attr( $this->format_team_focus_stack_label( $team_focus['teams'] ) ); ?>"
+						>
+							<?php foreach ( $team_focus['teams'] as $team ) : ?>
+								<span
+									class="contributor-team-focus-seg contributor-team-focus-seg--<?php echo esc_attr( $team['slug'] ); ?>"
+									style="width: <?php echo esc_attr( $team['percent'] ); ?>%;"
+									title="<?php echo esc_attr( sprintf( '%1$s (%2$s%%)', $team['name'], $team['percent'] ) ); ?>"
+								></span>
+							<?php endforeach; ?>
+						</div>
+						<ul class="contributor-team-focus-legend">
+							<?php foreach ( $team_focus['teams'] as $team ) : ?>
+								<li class="contributor-team-focus-legend-item">
+									<span class="contributor-team-focus-dot contributor-team-focus-dot--<?php echo esc_attr( $team['slug'] ); ?>" aria-hidden="true"></span>
+									<span class="contributor-team-focus-name"><?php echo esc_html( $team['name'] ); ?></span>
+									<span class="contributor-team-focus-percent"><?php echo esc_html( $team['percent'] ); ?>%</span>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+				</section>
+			<?php endif; ?>
+
 			<?php if ( $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
 				<h3><?php esc_html_e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
@@ -500,7 +537,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v10_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v11_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -574,6 +611,10 @@ class Contributor_Highlights_Public {
 				'summary'  => '',
 				'versions' => array(),
 			),
+			'team_focus'          => array(
+				'summary' => '',
+				'teams'   => array(),
+			),
 			'user_meta'           => array(),
 		);
 
@@ -622,9 +663,96 @@ class Contributor_Highlights_Public {
 		}
 
 		$profile_data['badges']              = $this->parse_badges( $xpath );
-		$profile_data['wordpress_releases'] = $this->parse_wordpress_releases( $xpath );
+		$profile_data['wordpress_releases']  = $this->parse_wordpress_releases( $xpath );
+		$profile_data['team_focus']          = $this->parse_team_focus( $xpath );
 
 		return $profile_data;
+	}
+
+	/**
+	 * Parse team focus distribution from the profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath XPath instance for the profile document.
+	 * @return   array           Team focus summary and team percentages.
+	 */
+	private function parse_team_focus( $xpath ) {
+		$team_focus = array(
+			'summary' => '',
+			'teams'   => array(),
+		);
+
+		$section = $xpath->query( '//section[contains(@class, "wp-p2-specs") and not(contains(@class, "wp-p2-releases"))]' )->item( 0 );
+		if ( ! $section ) {
+			return $team_focus;
+		}
+
+		$summary_node = $xpath->query( './/div[contains(@class, "sub")]', $section )->item( 0 );
+		if ( $summary_node ) {
+			$team_focus['summary'] = esc_html( trim( $summary_node->textContent ) );
+		}
+
+		foreach ( $xpath->query( './/ul[contains(@class, "spec-legend")]//li', $section ) as $legend_item ) {
+			$team_node    = $xpath->query( './/span[contains(@class, "leg-team")]', $legend_item )->item( 0 );
+			$percent_node = $xpath->query( './/span[contains(@class, "leg-pct")]', $legend_item )->item( 0 );
+			$dot_node     = $xpath->query( './/span[contains(@class, "spec-dot")]', $legend_item )->item( 0 );
+
+			if ( ! $team_node || ! $percent_node ) {
+				continue;
+			}
+
+			$segment_class = $dot_node ? $this->extract_spec_segment_class( $dot_node->getAttribute( 'class' ) ) : 'seg-stone';
+			$percent_value = (float) preg_replace( '/[^0-9.]/', '', $percent_node->textContent );
+
+			$team_focus['teams'][] = array(
+				'name'    => esc_html( trim( $team_node->textContent ) ),
+				'percent' => $percent_value,
+				'slug'    => sanitize_html_class( str_replace( 'seg-', '', $segment_class ) ),
+			);
+		}
+
+		return $team_focus;
+	}
+
+	/**
+	 * Extract a segment class from a spec dot element.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $class_attr Space-separated class list.
+	 * @return   string             Segment class name.
+	 */
+	private function extract_spec_segment_class( $class_attr ) {
+		foreach ( explode( ' ', $class_attr ) as $class_name ) {
+			if ( 0 === strpos( $class_name, 'seg-' ) ) {
+				return sanitize_html_class( $class_name );
+			}
+		}
+
+		return 'seg-stone';
+	}
+
+	/**
+	 * Format an accessible label for the team focus stack bar.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $teams Parsed team focus items.
+	 * @return   string        Accessible stack label.
+	 */
+	private function format_team_focus_stack_label( $teams ) {
+		$parts = array();
+
+		foreach ( $teams as $team ) {
+			$parts[] = sprintf( '%1$s %2$s%%', $team['name'], $team['percent'] );
+		}
+
+		return sprintf(
+			/* translators: %s: comma-separated team contribution percentages */
+			__( 'Contribution share: %s', 'contributor-highlights' ),
+			implode( ', ', $parts )
+		);
 	}
 
 	/**
