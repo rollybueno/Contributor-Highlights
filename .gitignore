@@ -24,6 +24,9 @@
 ehthumbs.db
 Thumbs.db
 
+# Cached profile HTML fixtures (exported from transients for local dev)
+/docs/fixtures/
+
 # Debug logs
 npm-debug.log*
 yarn-debug.log*

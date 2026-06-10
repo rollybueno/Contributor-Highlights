@@ -31,9 +31,99 @@
 }
 
 .contributor-name {
-    margin: 0 0 0.5em;
+    margin: 0 0 0.25em;
     color: #23282d;
     font-size: 2em;
+}
+
+.contributor-name a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contributor-name a:hover,
+.contributor-name a:focus {
+    color: #0073aa;
+}
+
+.contributor-jobline {
+    margin: 0 0 0.5em;
+    color: #444;
+    font-size: 1.05rem;
+    line-height: 1.4;
+}
+
+.contributor-handles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35em;
+    margin: 0 0 0.75em;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.contributor-handle a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.contributor-handle a:hover,
+.contributor-handle a:focus {
+    text-decoration: underline;
+}
+
+.contributor-handle-sep {
+    color: #aaa;
+}
+
+.contributor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em 1.25em;
+    margin: 0 0 1em;
+}
+
+.contributor-links a {
+    color: #0073aa;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.contributor-links a:hover,
+.contributor-links a:focus {
+    text-decoration: underline;
+}
+
+.contributor-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0 0 0.75em;
+}
+
+.contributor-chip-label {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 0.25em;
+}
+
+.contributor-chip {
+    display: inline-block;
+    padding: 0.2em 0.65em;
+    background: #f0f0f1;
+    border-radius: 999px;
+    color: #23282d;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.contributor-avatar a {
+    display: block;
+    border-radius: 50%;
 }
 
 .contributor-slack {

@@ -107,15 +107,107 @@ class Contributor_Highlights_Public {
 			<div class="contributor-header">
 				<?php if ( $atts['show_avatar'] && ! empty( $profile_data['avatar'] ) ) : ?>
 					<div class="contributor-avatar">
+						<?php if ( ! empty( $profile_data['profile_url'] ) ) : ?>
+							<a href="<?php echo esc_url( $profile_data['profile_url'] ); ?>" target="_blank" rel="noopener noreferrer">
+						<?php endif; ?>
 						<?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage ?>
-						<img src="<?php echo esc_url( str_replace( 's=100', 's=150', $profile_data['avatar'] ) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+						<img src="<?php echo esc_url( $this->normalize_avatar_url( $profile_data['avatar'] ) ); ?>" alt="<?php echo esc_attr( $profile_data['name'] ); ?>">
+						<?php if ( ! empty( $profile_data['profile_url'] ) ) : ?>
+							</a>
+						<?php endif; ?>
 					</div>
 				<?php endif; ?>
 
 				<div class="contributor-info">
-					<h2 class="contributor-name"><?php echo esc_html( $profile_data['name'] ); ?></h2>
+					<?php
+					$header = isset( $profile_data['header'] ) ? $profile_data['header'] : array();
+					$has_header_meta = ! empty( $header['jobline'] )
+						|| ! empty( $header['location'] )
+						|| ! empty( $header['joined'] )
+						|| ! empty( $header['links'] )
+						|| ! empty( $header['teams'] )
+						|| ! empty( $header['languages'] );
+					?>
 
-					<?php if ( $atts['show_meta'] && ! empty( $profile_data['user_meta'] ) ) : ?>
+					<?php if ( ! empty( $profile_data['name'] ) ) : ?>
+						<h2 class="contributor-name">
+							<?php if ( ! empty( $profile_data['profile_url'] ) ) : ?>
+								<a href="<?php echo esc_url( $profile_data['profile_url'] ); ?>" target="_blank" rel="noopener noreferrer">
+									<?php echo esc_html( $profile_data['name'] ); ?>
+								</a>
+							<?php else : ?>
+								<?php echo esc_html( $profile_data['name'] ); ?>
+							<?php endif; ?>
+						</h2>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] && ! empty( $header['jobline'] ) ) : ?>
+						<p class="contributor-jobline"><?php echo esc_html( $header['jobline'] ); ?></p>
+					<?php endif; ?>
+
+					<?php
+					$handle_parts = array();
+					if ( ! empty( $profile_data['username'] ) ) {
+						$handle_parts[] = array(
+							'class' => 'contributor-handle',
+							'html'  => ! empty( $profile_data['profile_url'] )
+								? '<a href="' . esc_url( $profile_data['profile_url'] ) . '" target="_blank" rel="noopener noreferrer">@' . esc_html( $profile_data['username'] ) . '</a>'
+								: '@' . esc_html( $profile_data['username'] ),
+						);
+					}
+					if ( $atts['show_meta'] && ! empty( $header['location'] ) ) {
+						$handle_parts[] = array(
+							'class' => 'contributor-handle contributor-location',
+							'html'  => esc_html( $header['location'] ),
+						);
+					}
+					if ( $atts['show_meta'] && ! empty( $header['joined'] ) ) {
+						$handle_parts[] = array(
+							'class' => 'contributor-handle contributor-joined',
+							'html'  => esc_html( $header['joined'] ),
+						);
+					}
+					?>
+					<?php if ( ! empty( $handle_parts ) ) : ?>
+						<p class="contributor-handles">
+							<?php foreach ( $handle_parts as $index => $handle_part ) : ?>
+								<?php if ( $index > 0 ) : ?>
+									<span class="contributor-handle-sep" aria-hidden="true">·</span>
+								<?php endif; ?>
+								<span class="<?php echo esc_attr( $handle_part['class'] ); ?>"><?php echo $handle_part['html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<?php endforeach; ?>
+						</p>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] && ! empty( $header['links'] ) ) : ?>
+						<div class="contributor-links">
+							<?php foreach ( $header['links'] as $link ) : ?>
+								<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+									<?php echo esc_html( $link['text'] ); ?>
+								</a>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] && ! empty( $header['teams'] ) ) : ?>
+						<div class="contributor-chip-row">
+							<span class="contributor-chip-label"><?php esc_html_e( 'Teams', 'contributor-highlights' ); ?></span>
+							<?php foreach ( $header['teams'] as $team ) : ?>
+								<span class="contributor-chip"><?php echo esc_html( $team ); ?></span>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] && ! empty( $header['languages'] ) ) : ?>
+						<div class="contributor-chip-row">
+							<span class="contributor-chip-label"><?php esc_html_e( 'Languages', 'contributor-highlights' ); ?></span>
+							<?php foreach ( $header['languages'] as $language ) : ?>
+								<span class="contributor-chip"><?php echo esc_html( $language ); ?></span>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( $atts['show_meta'] && ! $has_header_meta && ! empty( $profile_data['user_meta'] ) ) : ?>
 						<div class="contributor-meta">
 							<?php if ( ! empty( $profile_data['user_meta']['job'] ) ) : ?>
 								<div class="meta-item">
@@ -244,12 +336,17 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v3_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
-			$get_data     = $this->get_wp_data( $username );
-			$profile_data = $this->parse_profile_html( $get_data );
+			$get_data = $this->get_wp_data( $username );
+
+			if ( is_wp_error( $get_data ) ) {
+				return $get_data;
+			}
+
+			$profile_data = $this->parse_profile_html( $get_data, $username );
 			set_transient( $transient_key, $profile_data, 6 * HOUR_IN_SECONDS );
 		}
 
@@ -263,10 +360,11 @@ class Contributor_Highlights_Public {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @param    string $html    The HTML content to parse.
-	 * @return   array          The parsed profile data.
+	 * @param    string $html       The HTML content to parse.
+	 * @param    string $username   The WordPress.org username.
+	 * @return   array             The parsed profile data.
 	 */
-	private function parse_profile_html( $html ) {
+	private function parse_profile_html( $html, $username = '' ) {
 		// Create a DOMDocument object
 		$dom = new DOMDocument();
 
@@ -280,7 +378,17 @@ class Contributor_Highlights_Public {
 		// Extract profile data
 		$profile_data = array(
 			'name'          => '',
+			'username'      => sanitize_title( $username ),
 			'avatar'        => '',
+			'profile_url'   => '',
+			'header'        => array(
+				'jobline'   => '',
+				'location'  => '',
+				'joined'    => '',
+				'links'     => array(),
+				'teams'     => array(),
+				'languages' => array(),
+			),
 			'bio'           => '',
 			'slack'         => '',
 			'contributions' => '',
@@ -288,11 +396,12 @@ class Contributor_Highlights_Public {
 			'user_meta'     => array(),
 		);
 
-		// Get name
-		$name_nodes = $xpath->query( '//header[contains(@class, "site-header")]//h2/a' );
-		if ( $name_nodes->length > 0 ) {
-			$profile_data['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
-		}
+		$header = $this->parse_profile_header( $xpath, $username );
+		$profile_data['name']        = $header['name'];
+		$profile_data['username']    = $header['username'];
+		$profile_data['avatar']      = $header['avatar'];
+		$profile_data['profile_url'] = $header['profile_url'];
+		$profile_data['header']      = $header['details'];
 
 		// Get Slack
 		$slack_node = $xpath->query( '//p[@id="slack-username"]//span[contains(@class, "username")]' );
@@ -355,21 +464,170 @@ class Contributor_Highlights_Public {
 			);
 		}
 
-		// If we couldn't find the data, try alternative selectors
-		if ( empty( $profile_data['name'] ) ) {
+		return $profile_data;
+	}
+
+	/**
+	 * Parse header identity fields from the WordPress.org profile page.
+	 *
+	 * Targets the wp-p2-hero header introduced in the 2026 profiles redesign.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath      XPath instance for the profile document.
+	 * @param    string   $username   The WordPress.org username.
+	 * @return   array                Parsed header fields.
+	 */
+	private function parse_profile_header( $xpath, $username ) {
+		$header = array(
+			'name'        => '',
+			'username'    => sanitize_title( $username ),
+			'avatar'      => '',
+			'profile_url' => '',
+			'details'     => array(
+				'jobline'   => '',
+				'location'  => '',
+				'joined'    => '',
+				'links'     => array(),
+				'teams'     => array(),
+				'languages' => array(),
+			),
+		);
+
+		$name_nodes = $xpath->query( '//header[contains(@class, "wp-p2-hero")]//h2[contains(@class, "wp-p2-hero-name")]' );
+		if ( $name_nodes->length > 0 ) {
+			$header['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
+		}
+
+		if ( empty( $header['name'] ) ) {
+			$name_nodes = $xpath->query( '//header[contains(@class, "site-header")]//h2/a' );
+			if ( $name_nodes->length > 0 ) {
+				$header['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
+			}
+		}
+
+		if ( empty( $header['name'] ) ) {
 			$name_nodes = $xpath->query( '//h1[contains(@class, "profile-name")]' );
 			if ( $name_nodes->length > 0 ) {
-				$profile_data['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
+				$header['name'] = esc_html( trim( $name_nodes->item( 0 )->textContent ) );
 			}
 		}
 
-		if ( empty( $profile_data['avatar'] ) ) {
+		$avatar_nodes = $xpath->query( '//div[@id="item-header-avatar"]//img[contains(@class, "avatar")]' );
+		if ( $avatar_nodes->length > 0 ) {
+			$header['avatar'] = $this->sanitize_profile_image_url( $avatar_nodes->item( 0 )->getAttribute( 'src' ) );
+		}
+
+		if ( empty( $header['avatar'] ) ) {
+			$avatar_nodes = $xpath->query( '//header[contains(@class, "wp-p2-hero")]//img[contains(@class, "avatar")]' );
+			if ( $avatar_nodes->length > 0 ) {
+				$header['avatar'] = $this->sanitize_profile_image_url( $avatar_nodes->item( 0 )->getAttribute( 'src' ) );
+			}
+		}
+
+		if ( empty( $header['avatar'] ) ) {
 			$avatar_nodes = $xpath->query( '//img[contains(@class, "avatar")]' );
 			if ( $avatar_nodes->length > 0 ) {
-				$profile_data['avatar'] = esc_url( $avatar_nodes->item( 0 )->getAttribute( 'src' ) );
+				$header['avatar'] = $this->sanitize_profile_image_url( $avatar_nodes->item( 0 )->getAttribute( 'src' ) );
 			}
 		}
 
-		return $profile_data;
+		$handle_nodes = $xpath->query( '//span[contains(@class, "wp-p2-handle")]' );
+		if ( $handle_nodes->length > 0 ) {
+			$handle = trim( $handle_nodes->item( 0 )->textContent );
+			$header['username'] = esc_html( ltrim( $handle, '@' ) );
+		}
+
+		$profile_url_nodes = $xpath->query( '//meta[@property="og:url"]/@content' );
+		if ( $profile_url_nodes->length > 0 ) {
+			$header['profile_url'] = esc_url( $profile_url_nodes->item( 0 )->nodeValue );
+		}
+
+		if ( empty( $header['profile_url'] ) && ! empty( $header['username'] ) ) {
+			$header['profile_url'] = esc_url( 'https://profiles.wordpress.org/' . $header['username'] . '/' );
+		} elseif ( empty( $header['profile_url'] ) && ! empty( $username ) ) {
+			$header['profile_url'] = esc_url( 'https://profiles.wordpress.org/' . sanitize_title( $username ) . '/' );
+		}
+
+		$jobline_nodes = $xpath->query( '//header[contains(@class, "wp-p2-hero")]//p[contains(@class, "wp-p2-jobline")]' );
+		if ( $jobline_nodes->length > 0 ) {
+			$header['details']['jobline'] = esc_html( trim( $jobline_nodes->item( 0 )->textContent ) );
+		}
+
+		$location_nodes = $xpath->query( '//header[contains(@class, "wp-p2-hero")]//span[contains(@class, "wp-p2-loc")]' );
+		if ( $location_nodes->length > 0 ) {
+			$header['details']['location'] = esc_html( trim( $location_nodes->item( 0 )->textContent ) );
+		}
+
+		$joined_nodes = $xpath->query( '//header[contains(@class, "wp-p2-hero")]//span[contains(@class, "wp-p2-joined")]' );
+		if ( $joined_nodes->length > 0 ) {
+			$header['details']['joined'] = esc_html( trim( $joined_nodes->item( 0 )->textContent ) );
+		}
+
+		foreach ( $xpath->query( '//header[contains(@class, "wp-p2-hero")]//div[contains(@class, "wp-p2-links")]//a' ) as $link_node ) {
+			$link_text = trim( preg_replace( '/\s+/', ' ', $link_node->textContent ) );
+			if ( empty( $link_text ) ) {
+				continue;
+			}
+
+			$header['details']['links'][] = array(
+				'text' => esc_html( $link_text ),
+				'url'  => esc_url( $link_node->getAttribute( 'href' ) ),
+			);
+		}
+
+		foreach ( $xpath->query( '//header[contains(@class, "wp-p2-hero")]//div[contains(@class, "wp-p2-chip-row")]' ) as $chip_row ) {
+			$label_node = $xpath->query( './/span[contains(@class, "wp-p2-chip-label")]', $chip_row )->item( 0 );
+			if ( ! $label_node ) {
+				continue;
+			}
+
+			$label = trim( $label_node->textContent );
+			$chips = array();
+
+			foreach ( $xpath->query( './/span[contains(@class, "wp-p2-chip") and not(contains(@class, "wp-p2-chip-label"))]', $chip_row ) as $chip_node ) {
+				$chip_text = trim( $chip_node->textContent );
+				if ( ! empty( $chip_text ) ) {
+					$chips[] = esc_html( $chip_text );
+				}
+			}
+
+			if ( 'Teams' === $label ) {
+				$header['details']['teams'] = $chips;
+			} elseif ( 'Languages' === $label ) {
+				$header['details']['languages'] = $chips;
+			}
+		}
+
+		return $header;
+	}
+
+	/**
+	 * Sanitize an image URL extracted from profile HTML.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $url    Raw image URL from DOM attributes.
+	 * @return   string         Escaped image URL.
+	 */
+	private function sanitize_profile_image_url( $url ) {
+		return esc_url( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	}
+
+	/**
+	 * Normalize a Gravatar URL to a consistent display size.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $url     Avatar image URL.
+	 * @param    int    $size    Desired avatar size in pixels.
+	 * @return   string          Normalized avatar URL.
+	 */
+	private function normalize_avatar_url( $url, $size = 150 ) {
+		if ( preg_match( '/([?&])s=\d+/', $url ) ) {
+			return preg_replace( '/([?&])s=\d+/', '${1}s=' . absint( $size ), $url );
+		}
+
+		return $url;
 	}
 }
