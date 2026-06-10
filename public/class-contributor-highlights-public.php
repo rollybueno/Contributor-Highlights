@@ -369,17 +369,44 @@ class Contributor_Highlights_Public {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $atts['show_badges'] && ! empty( $profile_data['badges'] ) ) : ?>
+			<?php if ( $atts['show_badges'] && $this->badges_have_items( $profile_data['badges'] ) ) : ?>
 				<div class="contributor-badges">
 					<?php if ( ! $atts['compact_version'] ) : ?>
-						<h3><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
+						<h3 class="contributor-badges-title"><?php esc_html_e( 'Badges & Achievements', 'contributor-highlights' ); ?></h3>
 					<?php endif; ?>
-					<div class="badges-grid">
-						<?php foreach ( $profile_data['badges'] as $badge ) : ?>
-							<div class="badge-item">
-								<span class="dashicons <?php echo esc_html( implode( ' ', $badge['class'] ) ); ?>"></span>
-								<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
-							</div>
+					<div class="contributor-badge-groups">
+						<?php foreach ( $profile_data['badges']['groups'] as $badge_group ) : ?>
+							<section class="contributor-badge-group contributor-badge-group--<?php echo esc_attr( $badge_group['slug'] ); ?>">
+								<header class="contributor-badge-group-head">
+									<h4 class="contributor-badge-group-title">
+										<span class="contributor-badge-group-dot" aria-hidden="true"></span>
+										<?php echo esc_html( $badge_group['name'] ); ?>
+									</h4>
+									<?php if ( ! empty( $badge_group['count'] ) ) : ?>
+										<span class="contributor-badge-group-count"><?php echo esc_html( $badge_group['count'] ); ?></span>
+									<?php endif; ?>
+								</header>
+								<div class="contributor-badge-grid">
+									<?php foreach ( $badge_group['badges'] as $badge ) : ?>
+										<div
+											class="badge-item badge-item--<?php echo esc_attr( $badge['slug'] ); ?>"
+											<?php if ( ! empty( $badge['title'] ) ) : ?>
+												title="<?php echo esc_attr( $badge['title'] ); ?>"
+											<?php endif; ?>
+										>
+											<?php if ( 'dashicon' === $badge['icon_type'] ) : ?>
+												<span class="badge-icon <?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"></span>
+											<?php else : ?>
+												<span class="badge-icon badge-icon--letter <?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"><?php echo esc_html( $badge['icon_content'] ); ?></span>
+											<?php endif; ?>
+											<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
+											<?php if ( ! empty( $badge['year'] ) ) : ?>
+												<span class="badge-year"><?php echo esc_html( $badge['year'] ); ?></span>
+											<?php endif; ?>
+										</div>
+									<?php endforeach; ?>
+								</div>
+							</section>
 						<?php endforeach; ?>
 					</div>
 				</div>
@@ -437,7 +464,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v8_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v9_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
@@ -504,7 +531,9 @@ class Contributor_Highlights_Public {
 			),
 			'slack'         => '',
 			'contributions' => '',
-			'badges'        => array(),
+			'badges'        => array(
+				'groups' => array(),
+			),
 			'user_meta'     => array(),
 		);
 
@@ -552,29 +581,158 @@ class Contributor_Highlights_Public {
 			}
 		}
 
-		// Get badges
-		foreach ( $xpath->query( '//ul[@id="user-badges"]/li' ) as $li ) {
-			$badge_name = trim( $li->textContent );
-			$badge_icon = '';
-			$classes    = '';
-			$badge_div  = $xpath->query( './/div[contains(@class, "badge")]', $li )->item( 0 );
-			if ( $badge_div && $badge_div->hasAttributes() ) {
-				$classes = explode( ' ', $badge_div->getAttribute( 'class' ) );
-				foreach ( $classes as $class ) {
-					if ( strpos( $class, 'dashicons-' ) !== false ) {
-						$badge_icon = $class;
-						break;
-					}
+		$profile_data['badges'] = $this->parse_badges( $xpath );
+
+		return $profile_data;
+	}
+
+	/**
+	 * Parse badges from the WordPress.org profile page.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    DOMXPath $xpath XPath instance for the profile document.
+	 * @return   array           Badge groups and items.
+	 */
+	private function parse_badges( $xpath ) {
+		$badges = array(
+			'groups' => array(),
+		);
+
+		foreach ( $xpath->query( '//section[contains(@class, "wp-p2-badges-block")]//section[contains(@class, "wp-p2-badge-cat")]' ) as $category_node ) {
+			$group_slug  = '';
+			$group_class = $category_node->getAttribute( 'class' );
+
+			foreach ( explode( ' ', $group_class ) as $class_name ) {
+				if ( 0 === strpos( $class_name, 'cat-' ) ) {
+					$group_slug = sanitize_title( substr( $class_name, 4 ) );
+					break;
 				}
 			}
-			$profile_data['badges'][] = array(
-				'name'  => esc_html( $badge_name ),
-				'icon'  => esc_html( $badge_icon ),
-				'class' => array_map( 'esc_html', $classes ),
+
+			$group_name_node  = $xpath->query( './/header[contains(@class, "wp-p2-badge-cat-head")]//span[contains(@class, "cname")]', $category_node )->item( 0 );
+			$count_node = $xpath->query( './/header[contains(@class, "wp-p2-badge-cat-head")]//div[contains(@class, "ccount")]', $category_node )->item( 0 );
+			$items      = array();
+
+			foreach ( $xpath->query( './/span[contains(@class, "medal")]', $category_node ) as $medal_node ) {
+				$badge_class = $this->extract_badge_class_name( $medal_node->getAttribute( 'class' ) );
+				$badge_slug  = $this->extract_badge_slug( $badge_class );
+				$badge_name_node = $xpath->query( './/span[contains(@class, "mn")]', $medal_node )->item( 0 );
+				$year_node   = $xpath->query( './/span[contains(@class, "myear")]', $medal_node )->item( 0 );
+				$icon_node   = $xpath->query( './/span[contains(@class, "mi")]', $medal_node )->item( 0 );
+
+				if ( ! $badge_name_node ) {
+					continue;
+				}
+
+				$icon_type     = 'letter';
+				$icon_content  = '';
+				$icon_classes  = array( $badge_class );
+				$medal_title   = $medal_node->getAttribute( 'title' );
+				$badge_year    = '';
+
+				if ( $year_node ) {
+					$badge_year = trim(
+						html_entity_decode( $year_node->textContent, ENT_QUOTES, 'UTF-8' )
+					);
+				}
+
+				if ( $icon_node ) {
+					$icon_class_attr = $icon_node->getAttribute( 'class' );
+					if ( false !== strpos( $icon_class_attr, 'dashicons' ) ) {
+						$icon_type    = 'dashicon';
+						$icon_classes = array_merge(
+							array( 'badge-icon', 'dashicons' ),
+							array_filter(
+								array_map( 'sanitize_html_class', explode( ' ', $icon_class_attr ) ),
+								function ( $class_name ) {
+									return 'mi' !== $class_name;
+								}
+							)
+						);
+						$icon_classes[] = $badge_class;
+					} else {
+						$icon_content = esc_html( trim( $icon_node->textContent ) );
+						$icon_classes = array( 'badge-icon', 'badge-icon--letter', $badge_class );
+					}
+				}
+
+				$items[] = array(
+					'slug'          => $badge_slug,
+					'name'          => esc_html( trim( $badge_name_node->textContent ) ),
+					'year'          => $badge_year,
+					'title'         => esc_attr( $medal_title ),
+					'icon_type'     => $icon_type,
+					'icon_content'  => $icon_content,
+					'icon_classes'  => array_map( 'esc_attr', array_unique( $icon_classes ) ),
+				);
+			}
+
+			if ( empty( $items ) ) {
+				continue;
+			}
+
+			$badges['groups'][] = array(
+				'slug'   => $group_slug,
+				'name'   => $group_name_node ? esc_html( trim( $group_name_node->textContent ) ) : '',
+				'count'  => $count_node ? esc_html( trim( $count_node->textContent ) ) : '',
+				'badges' => $items,
 			);
 		}
 
-		return $profile_data;
+		return $badges;
+	}
+
+	/**
+	 * Extract the badge class name from a medal element.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $class_attr Space-separated class list.
+	 * @return   string             Badge class name.
+	 */
+	private function extract_badge_class_name( $class_attr ) {
+		foreach ( explode( ' ', $class_attr ) as $class_name ) {
+			if ( 0 === strpos( $class_name, 'badge-' ) ) {
+				return sanitize_html_class( $class_name );
+			}
+		}
+
+		return 'badge-unknown';
+	}
+
+	/**
+	 * Extract a badge slug from its class name.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    string $badge_class Badge class name.
+	 * @return   string              Badge slug.
+	 */
+	private function extract_badge_slug( $badge_class ) {
+		return sanitize_title( str_replace( 'badge-', '', $badge_class ) );
+	}
+
+	/**
+	 * Check whether parsed badge data contains any items.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 * @param    array $badges Parsed badge data.
+	 * @return   bool          True when at least one badge exists.
+	 */
+	private function badges_have_items( $badges ) {
+		if ( empty( $badges['groups'] ) || ! is_array( $badges['groups'] ) ) {
+			return false;
+		}
+
+		foreach ( $badges['groups'] as $badge_group ) {
+			if ( ! empty( $badge_group['badges'] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
