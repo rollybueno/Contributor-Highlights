@@ -7,6 +7,32 @@
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: inherit;
+}
+
+.contributor-profile :where(
+    .contributor-current-job-title,
+    .contributor-bio-title,
+    .contributor-recent-impact-title,
+    .contributor-spec-title,
+    .contributor-badges-title
+) {
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.contributor-profile :where(
+    .contributor-bio-content,
+    .contributor-bio-content p,
+    .contributor-bio-content li,
+    .contributor-bio-content a,
+    .contributor-bio-preview p,
+    .badge-name
+) {
+    font-family: inherit;
+    font-size: 0.95rem;
 }
 
 .contributor-header {
@@ -224,7 +250,6 @@
 .contributor-bio-title {
     margin: 0 0 0.75em;
     color: #23282d;
-    font-size: 1.1rem;
 }
 
 .contributor-bio-content {
@@ -234,6 +259,8 @@
     border-radius: 6px;
     line-height: 1.6;
     color: #444;
+    font-family: inherit;
+    font-size: 0.95rem;
 }
 
 .contributor-bio-content p {
@@ -536,6 +563,10 @@
 .contributor-badges-title {
     margin: 0 0 1.25em;
     color: #23282d;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .contributor-badge-groups {
@@ -617,6 +648,7 @@
 
 .badge-item .badge-icon,
 .badge-item .dashicons {
+    font-family: dashicons;
     font-size: 1.2em;
     width: 32px;
     height: 32px;
@@ -1121,7 +1153,8 @@
 }
 
 .badge-name {
-    font-size: 0.9em;
+    font-family: inherit;
+    font-size: 0.95rem;
     color: #23282d;
     font-weight: 500;
     line-height: 1.2;
