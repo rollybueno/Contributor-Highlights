@@ -394,11 +394,7 @@ class Contributor_Highlights_Public {
 												title="<?php echo esc_attr( $badge['title'] ); ?>"
 											<?php endif; ?>
 										>
-											<?php if ( 'dashicon' === $badge['icon_type'] ) : ?>
-												<span class="badge-icon <?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"></span>
-											<?php else : ?>
-												<span class="badge-icon badge-icon--letter <?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"><?php echo esc_html( $badge['icon_content'] ); ?></span>
-											<?php endif; ?>
+											<span class="<?php echo esc_attr( implode( ' ', $badge['icon_classes'] ) ); ?>" aria-hidden="true"></span>
 											<span class="badge-name"><?php echo esc_html( $badge['name'] ); ?></span>
 											<?php if ( ! empty( $badge['year'] ) ) : ?>
 												<span class="badge-year"><?php echo esc_html( $badge['year'] ); ?></span>
@@ -625,11 +621,9 @@ class Contributor_Highlights_Public {
 					continue;
 				}
 
-				$icon_type     = 'letter';
-				$icon_content  = '';
-				$icon_classes  = array( $badge_class );
-				$medal_title   = $medal_node->getAttribute( 'title' );
-				$badge_year    = '';
+				$icon_classes = array( 'badge-icon', $badge_class );
+				$medal_title  = $medal_node->getAttribute( 'title' );
+				$badge_year   = '';
 
 				if ( $year_node ) {
 					$badge_year = trim(
@@ -640,7 +634,6 @@ class Contributor_Highlights_Public {
 				if ( $icon_node ) {
 					$icon_class_attr = $icon_node->getAttribute( 'class' );
 					if ( false !== strpos( $icon_class_attr, 'dashicons' ) ) {
-						$icon_type    = 'dashicon';
 						$icon_classes = array_merge(
 							array( 'badge-icon', 'dashicons' ),
 							array_filter(
@@ -651,20 +644,15 @@ class Contributor_Highlights_Public {
 							)
 						);
 						$icon_classes[] = $badge_class;
-					} else {
-						$icon_content = esc_html( trim( $icon_node->textContent ) );
-						$icon_classes = array( 'badge-icon', 'badge-icon--letter', $badge_class );
 					}
 				}
 
 				$items[] = array(
-					'slug'          => $badge_slug,
-					'name'          => esc_html( trim( $badge_name_node->textContent ) ),
-					'year'          => $badge_year,
-					'title'         => esc_attr( $medal_title ),
-					'icon_type'     => $icon_type,
-					'icon_content'  => $icon_content,
-					'icon_classes'  => array_map( 'esc_attr', array_unique( $icon_classes ) ),
+					'slug'         => $badge_slug,
+					'name'         => esc_html( trim( $badge_name_node->textContent ) ),
+					'year'         => $badge_year,
+					'title'        => esc_attr( $medal_title ),
+					'icon_classes' => array_map( 'esc_attr', array_unique( $icon_classes ) ),
 				);
 			}
 
