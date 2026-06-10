@@ -465,7 +465,6 @@ class Contributor_Highlights_Public {
 									<li class="contributor-spec-legend-item">
 										<span class="contributor-spec-dot contributor-spec-dot--<?php echo esc_attr( $role['slug'] ); ?>" aria-hidden="true"></span>
 										<span class="contributor-spec-label"><?php echo esc_html( $role['name'] ); ?></span>
-										<span class="contributor-spec-value"><?php echo esc_html( $role['count'] ); ?></span>
 									</li>
 								<?php endforeach; ?>
 							</ul>
