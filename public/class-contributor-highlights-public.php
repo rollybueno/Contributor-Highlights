@@ -40,21 +40,38 @@ class Contributor_Highlights_Public {
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
+	 * Register public style and script handles without printing them.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 */
-	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css', array('dashicons'), $this->version, 'all' );
+	public function register_assets() {
+		$style_path  = CONTHI_PLUGIN_DIR . 'public/css/contributor-highlights-public.css';
+		$script_path = CONTHI_PLUGIN_DIR . 'public/js/contributor-highlights-public.js';
+
+		wp_register_style(
+			'contributor-highlights-public',
+			CONTHI_PLUGIN_URL . 'public/css/contributor-highlights-public.css',
+			array( 'dashicons' ),
+			file_exists( $style_path ) ? (string) filemtime( $style_path ) : $this->version
+		);
+
+		wp_register_script(
+			'contributor-highlights-public',
+			CONTHI_PLUGIN_URL . 'public/js/contributor-highlights-public.js',
+			array(),
+			file_exists( $script_path ) ? (string) filemtime( $script_path ) : $this->version,
+			true
+		);
 	}
 
 	/**
-	 * Register the JavaScript for the public-facing side of the site.
+	 * Enqueue public assets when a profile card is actually rendered.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 */
-	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, CONTHI_PLUGIN_URL . 'public/js/contributor-highlights-public.js', array( 'jquery' ), $this->version, false );
+	private function enqueue_front_assets() {
+		wp_enqueue_style( 'contributor-highlights-public' );
+		wp_enqueue_script( 'contributor-highlights-public' );
 	}
 
 	/**
@@ -100,12 +117,13 @@ class Contributor_Highlights_Public {
 			$atts[ $boolean_key ] = $this->parse_bool_attr( $atts[ $boolean_key ] );
 		}
 
-		if ( empty( $atts['username'] ) ) {
+		$atts['username'] = sanitize_user( wp_unslash( $atts['username'] ), true );
+
+		if ( '' === $atts['username'] ) {
 			return '<p>' . __( 'Please provide a WordPress.org username.', 'contributor-highlights' ) . '</p>';
 		}
 
-		// If compact version is true,
-		// only show meta and badges, and hide the name
+		// Compact mode keeps avatar, meta, badges, and the optional impact line.
 		if ( $atts['compact_version'] ) {
 			$atts['show_bio']    = false;
 			$atts['show_avatar'] = true;
@@ -118,6 +136,8 @@ class Contributor_Highlights_Public {
 		if ( is_wp_error( $profile_data ) ) {
 			return '<p>' . $profile_data->get_error_message() . '</p>';
 		}
+
+		$this->enqueue_front_assets();
 
 		$header      = isset( $profile_data['header'] ) ? $profile_data['header'] : array();
 		$current_job = isset( $profile_data['current_job'] ) ? $profile_data['current_job'] : array();
@@ -425,7 +445,7 @@ class Contributor_Highlights_Public {
 				</section>
 			<?php endif; ?>
 
-			<?php if ( $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
+			<?php if ( ! $atts['compact_version'] && $atts['show_contributions'] && ! empty( $profile_data['contributions'] ) ) : ?>
 				<h3><?php esc_html_e( 'Contributions', 'contributor-highlights' ); ?></h3>
 				<div class="contributor-contributions">
 					<?php echo wp_kses_post( $profile_data['contributions'] ); ?>
@@ -540,14 +560,46 @@ class Contributor_Highlights_Public {
 	 * @return   string|WP_Error     The HTML content of the profile page or WP_Error on failure.
 	 */
 	private function get_wp_data( $username ) {
-		$transient_key = 'conthi_wp_data_' . sanitize_title( $username );
+		$username = sanitize_user( $username, true );
+
+		if ( '' === $username ) {
+			return new WP_Error( 'invalid_username', __( 'Please provide a valid WordPress.org username.', 'contributor-highlights' ) );
+		}
+
+		$transient_key = 'conthi_wp_data_v13_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {
-			$response = wp_remote_get( 'https://profiles.wordpress.org/' . $username . '/' );
+			$response = wp_remote_get(
+				'https://profiles.wordpress.org/' . rawurlencode( $username ) . '/',
+				array(
+					'timeout'    => 15,
+					'user-agent' => 'Contributor Highlights/' . CONTHI_VERSION . '; ' . home_url( '/' ),
+				)
+			);
 
 			if ( is_wp_error( $response ) ) {
 				return $response;
+			}
+
+			$status_code = (int) wp_remote_retrieve_response_code( $response );
+
+			if ( 404 === $status_code ) {
+				return new WP_Error(
+					'profile_not_found',
+					sprintf(
+						/* translators: %s: WordPress.org username */
+						__( 'No WordPress.org profile was found for "%s".', 'contributor-highlights' ),
+						$username
+					)
+				);
+			}
+
+			if ( 200 !== $status_code ) {
+				return new WP_Error(
+					'http_error',
+					__( 'Unable to load this WordPress.org profile right now. Please try again later.', 'contributor-highlights' )
+				);
 			}
 
 			$profile_data = wp_remote_retrieve_body( $response );
@@ -556,13 +608,10 @@ class Contributor_Highlights_Public {
 				return new WP_Error( 'empty_response', __( 'No data received from WordPress.org', 'contributor-highlights' ) );
 			}
 
-			if ( is_wp_error( $profile_data ) ) {
-				return $profile_data;
-			}
-
-			// Cache the data for 6 hours
+			// Cache successful responses for 6 hours. Errors are not cached.
 			set_transient( $transient_key, $profile_data, 6 * HOUR_IN_SECONDS );
 		}
+
 		return $profile_data;
 	}
 
@@ -577,7 +626,7 @@ class Contributor_Highlights_Public {
 	 * @return   array              The parsed profile data.
 	 */
 	private function get_profile_data( $username ) {
-		$transient_key = 'conthi_profile_data_v12_' . sanitize_title( $username );
+		$transient_key = 'conthi_profile_data_v13_' . sanitize_title( $username );
 		$profile_data  = get_transient( $transient_key );
 
 		if ( false === $profile_data ) {

@@ -1,33 +1,56 @@
-(function($) {
-    'use strict';
+(function () {
+	'use strict';
 
-    // Initialize when document is ready
-    $(document).ready(function() {
-        // Handle error states for avatar images
-        $('.contributor-profile img').on('error', function() {
-            $(this).attr('src', 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y');
-        });
+	function onReady(callback) {
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', callback);
+			return;
+		}
 
-        $('.contributor-bio-toggle').on('click', function() {
-            var $toggle = $(this);
-            var $section = $toggle.closest('.contributor-bio');
-            var $preview = $section.find('.contributor-bio-preview');
-            var $full = $section.find('.contributor-bio-full');
-            var isExpanded = $toggle.attr('aria-expanded') === 'true';
-            var readMore = $toggle.data('read-more') || 'Read more';
-            var readLess = $toggle.data('read-less') || 'Read less';
+		callback();
+	}
 
-            if (isExpanded) {
-                $full.prop('hidden', true);
-                $preview.prop('hidden', false);
-                $toggle.attr('aria-expanded', 'false').text(readMore);
-                return;
-            }
+	onReady(function () {
+		document.querySelectorAll('.contributor-profile img').forEach(function (img) {
+			img.addEventListener('error', function () {
+				img.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+			});
+		});
 
-            $preview.prop('hidden', true);
-            $full.prop('hidden', false);
-            $toggle.attr('aria-expanded', 'true').text(readLess);
-        });
-    });
+		document.querySelectorAll('.contributor-bio-toggle').forEach(function (toggle) {
+			toggle.addEventListener('click', function () {
+				var section = toggle.closest('.contributor-bio');
+				if (!section) {
+					return;
+				}
 
-})(jQuery); 
+				var preview = section.querySelector('.contributor-bio-preview');
+				var full = section.querySelector('.contributor-bio-full');
+				var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+				var readMore = toggle.getAttribute('data-read-more') || 'Read more';
+				var readLess = toggle.getAttribute('data-read-less') || 'Read less';
+
+				if (isExpanded) {
+					if (full) {
+						full.hidden = true;
+					}
+					if (preview) {
+						preview.hidden = false;
+					}
+					toggle.setAttribute('aria-expanded', 'false');
+					toggle.textContent = readMore;
+					return;
+				}
+
+				if (preview) {
+					preview.hidden = true;
+				}
+				if (full) {
+					full.hidden = false;
+				}
+				toggle.setAttribute('aria-expanded', 'true');
+				toggle.textContent = readLess;
+			});
+		});
+	});
+})();

@@ -89,9 +89,7 @@ class Contributor_Highlights {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-		$plugin_admin = new Contributor_Highlights_Admin($this->get_plugin_name(), $this->get_version());
-
-		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+		// No admin screen; do not enqueue admin CSS on every wp-admin page.
 	}
 
 	/**
@@ -104,8 +102,7 @@ class Contributor_Highlights {
 	private function define_public_hooks() {
 		$plugin_public = new Contributor_Highlights_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_public, 'register_assets', 5 );
 		$this->loader->add_shortcode( 'contributor_profile', $plugin_public, 'display_contributor_profile' );
 	}
 
